@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Text?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="850.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.capstone.GameController">
+   <children>
+      <ButtonBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="50.0" prefWidth="200.0">
+        <buttons>
+          <Button mnemonicParsing="false" onAction="#onMenuButtonClick" styleClass="&lt;!-- HTML !--&gt;&lt;button class=&quot;button-11&quot; role=&quot;button&quot;&gt;Button 11&lt;/button&gt;/* CSS */.button-11 {  display: flex;  flex-direction: column;  align-items: center;  padding: 6px 14px;  font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;  border-radius: 6px;  color: #3D3D3D;  background: #fff;  border: none;  box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1);  user-select: none;  -webkit-user-select: none;  touch-action: manipulation;}.button-11:focus {  box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);  outline: 0;}" text="Menu" textAlignment="CENTER" />
+        </buttons>
+      </ButtonBar>
+      <HBox prefHeight="800.0" prefWidth="1100.0">
+         <children>
+            <VBox prefHeight="800.0" prefWidth="700.0">
+               <children>
+                  <HBox prefHeight="50.0" prefWidth="400.0">
+                     <children>
+                        <StackPane>
+                           <children>
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="50.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Population #/#" />
+                           </children>
+                        </StackPane>
+                        <StackPane>
+                           <children>
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="50.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Wood #" />
+                           </children>
+                        </StackPane>
+                        <StackPane>
+                           <children>
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="50.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Food #" />
+                           </children>
+                        </StackPane>
+                        <StackPane>
+                           <children>
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="50.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Houses #" />
+                           </children>
+                        </StackPane>
+                        <HBox nodeOrientation="RIGHT_TO_LEFT" prefHeight="50.0" prefWidth="300.0">
+                           <children>
+                              <StackPane>
+                                 <children>
+                                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="50.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Time" />
+                                 </children>
+                              </StackPane>
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
+                  <Canvas height="750.0" width="700.0" />
+               </children>
+            </VBox>
+            <VBox prefHeight="800.0" prefWidth="450.0">
+               <children>
+                  <HBox prefHeight="300.0" prefWidth="450.0">
+                     <children>
+                        <ScrollPane hbarPolicy="NEVER" prefHeight="300.0" prefWidth="225.0">
+                          <content>
+                            <AnchorPane fx:id="pawnMenu" minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="225.0" />
+                          </content>
+                        </ScrollPane>
+                        <VBox alignment="CENTER" prefHeight="300.0" prefWidth="225.0" spacing="10.0">
+                           <children>
+                              <StackPane prefHeight="50.0" prefWidth="225.0">
+                                 <children>
+                                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Pawns Name" />
+                                 </children>
+                              </StackPane>
+                              <StackPane prefHeight="50.0" prefWidth="225.0">
+                                 <children>
+                                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Health #/#" />
+                                 </children>
+                              </StackPane>
+                              <StackPane prefHeight="50.0" prefWidth="225.0">
+                                 <children>
+                                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Hunger #/#" />
+                                 </children>
+                              </StackPane>
+                              <StackPane prefHeight="50.0" prefWidth="225.0">
+                                 <children>
+                                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sleep #/#" />
+                                 </children>
+                              </StackPane>
+                              <StackPane prefHeight="50.0" prefWidth="225.0">
+                                 <children>
+                                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Wood #/#" />
+                                 </children>
+                              </StackPane>
+                              <StackPane prefHeight="40.0" prefWidth="225.0">
+                                 <children>
+                                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Food #/#" />
+                                 </children>
+                              </StackPane>
+                              <StackPane prefHeight="40.0" prefWidth="225.0" />
+                           </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</VBox>
