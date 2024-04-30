@@ -12,7 +12,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="850.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.capstone.GameController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="850.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.capstone.controllers.GameController">
    <children>
       <ButtonBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="50.0" prefWidth="200.0">
         <buttons>

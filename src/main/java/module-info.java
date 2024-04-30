@@ -3,6 +3,6 @@ module com.example.capstone {
     requires javafx.fxml;
 
 
-    opens com.example.capstone to javafx.fxml;
-    exports com.example.capstone;
+    opens com.example.capstone.controllers to javafx.fxml;
+    exports com.example.capstone.controllers;
 }
