@@ -12,8 +12,7 @@ public class Pawn extends Inventory implements Placeable {
     final private int MAX_HUNGER = 10;
     private int moveSpeed = 1;
     private boolean alive;
-    static final char DISPLAY_CHAR = 'i';
-    String name = "NA";
+    private String name = "NA";
     private Map map;
 
     public Pawn(String name, int x, int y, House house, Map map) {
@@ -24,15 +23,18 @@ public class Pawn extends Inventory implements Placeable {
         location[1] = y;
         this.map = map;
         this.assignedHouse = house;
+        this.name = name;
         alive = true;
     }
 
     public void tick() {
-        int time = Game.getHours();
+        int time = map.getHours();
         if (time > 6 && time < 20) {
             work();
+            System.out.println("Working");
         } else if (time < 6 | time > 20) {
             sleep();
+            System.out.println("Sleeping");
         }
         if (time % 2 == 0) {
             if (hunger > 0) {
@@ -50,31 +52,33 @@ public class Pawn extends Inventory implements Placeable {
 
     public void work() {
         Resource resource = (Resource) assignedResource;
-        int workMode = 0; // 1 for harvest resource 2 for return to warehouse
-        if (resource.getResourceType().equals("tree")) {
-            if (super.getWood() < super.getWoodMax()) {
-                workMode = 1;
-            } else {
-                workMode = 2;
+        if(assignedResource != null) {
+            int workMode = 0; // 1 for harvest resource 2 for return to warehouse
+            if (resource.getResourceType().equals("tree")) {
+                if (super.getWood() < super.getWoodMax()) {
+                    workMode = 1;
+                } else {
+                    workMode = 2;
+                }
+            } else if (resource.getResourceType().equals("bush")) {
+                if (super.getFood() < super.getFoodMax()) {
+                    workMode = 1;
+                } else {
+                    workMode = 2;
+                }
             }
-        } else if (resource.getResourceType().equals("bush")) {
-            if (super.getFood() < super.getFoodMax()) {
-                workMode = 1;
-            } else {
-                workMode = 2;
-            }
-        }
-        if (workMode == 1) {
-            if (isAtLocation(assignedResource)) {
-                harvest();
-            } else {
-                goTo(assignedResource);
-            }
-        } else if (workMode == 2) {
-            if (isAtLocation(assignedWarehouse)) {
-                deliverResources();
-            } else {
-                goTo(assignedWarehouse);
+            if (workMode == 1) {
+                if (isAtLocation(assignedResource)) {
+                    harvest();
+                } else {
+                    goTo(assignedResource);
+                }
+            } else if (workMode == 2) {
+                if (isAtLocation(assignedWarehouse)) {
+                    deliverResources();
+                } else {
+                    goTo(assignedWarehouse);
+                }
             }
         }
     }

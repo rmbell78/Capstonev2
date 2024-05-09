@@ -61,9 +61,9 @@
       </HBox>
       <Canvas fx:id="GameCanvas" height="760.0" layoutY="90.0" width="700.0" />
       <ScrollPane hbarPolicy="NEVER" layoutX="701.0" layoutY="74.0" prefHeight="250.0" prefWidth="200.0" vbarPolicy="ALWAYS">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="250.0" prefWidth="200.0" />
-        </content>
+         <content>
+            <VBox  fx:id="PawnList" prefWidth="200.0" />
+         </content>
       </ScrollPane>
       <StackPane layoutX="706.0" layoutY="42.0" prefHeight="30.0" prefWidth="190.0">
          <children>
@@ -152,13 +152,13 @@
                   <StackPane prefHeight="30.0" prefWidth="130.0">
                      <children>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="130.0" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Start Work Time:" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Assigned Warehouse" />
                      </children>
                   </StackPane>
                   <StackPane prefHeight="30.0" prefWidth="130.0">
                      <children>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="130.0" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Time" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Warehouse" />
                      </children>
                   </StackPane>
                   <Button mnemonicParsing="false" text="Change" />
@@ -169,13 +169,13 @@
                   <StackPane prefHeight="30.0" prefWidth="130.0">
                      <children>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="130.0" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="End Work Time" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Work Time" />
                      </children>
                   </StackPane>
                   <StackPane prefHeight="30.0" prefWidth="130.0">
                      <children>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="130.0" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Time" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" Time : Time" />
                      </children>
                   </StackPane>
                   <Button mnemonicParsing="false" text="Change" />
@@ -189,5 +189,6 @@
         </content>
       </ScrollPane>
       <Button layoutX="15.0" layoutY="805.0" mnemonicParsing="false" text="Add A House" wrapText="true" />
+      <Button layoutX="131.0" layoutY="806.0" mnemonicParsing="false" onAction="#onNextButtonClick" text="Next" />
    </children>
 </AnchorPane>

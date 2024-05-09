@@ -12,6 +12,7 @@ public class Map {
     private final int NUM_STARTING_PAWNS = 3;
     static final int DEFAULT_SIZE = 30;
     private int numHouses;
+    private int hours = 8, day, minutes;
 
     /**
      * Constructs a new Map with default size.
@@ -177,7 +178,7 @@ public class Map {
         int houseX = 0, houseY = 0;
         House house = null;
         int nameIndex = 0;
-        String[] firstNames = {"Bob", "Amy"};
+        String[] firstNames = {"Bob", "Amy", "George"};
         // Maybe a while loop here instead, avoid going through the whole array list
         // everytime
         for (Object mapObject : mapObjects) {
@@ -189,8 +190,6 @@ public class Map {
         }
         // I still think there is a better way to do this
         for (int i = 0; i < NUM_STARTING_PAWNS; i++) {
-            //TODO fix name index out of bounds
-            nameIndex = 0;
             if (!isObjectAt(houseX + 1, houseY)) {
                 try {
                     createPawnAssignHouse(firstNames[nameIndex], houseX + 1, houseY, house);
@@ -411,12 +410,34 @@ public class Map {
     }
 
     public void tick() {
+        minutes += 15;
+        if (minutes == 60) {
+            minutes = 0;
+            hours++;
+        }
+        if (hours == 25) {
+            hours = 0;
+            day++;
+        }
+
         ArrayList<Object> pawnList = new ArrayList<Object>();
         pawnList = getPawns();
         for (Object o : pawnList) {
             Pawn pawn = (Pawn) o;
             pawn.tick();
         }
+    }
+
+    public int getHours() {
+        return hours;
+    }
+
+    public int getMinutes() {
+        return minutes;
+    }
+
+    public int getDay() {
+        return day;
     }
 
 }
