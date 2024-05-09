@@ -13,14 +13,17 @@ public class Pawn extends Inventory implements Placeable {
     private int moveSpeed = 1;
     private boolean alive;
     static final char DISPLAY_CHAR = 'i';
-    String name;
+    String name = "NA";
+    private Map map;
 
-    public Pawn(String name, int x, int y) {
+    public Pawn(String name, int x, int y, House house, Map map) {
         super(0, 0, 5, 5);
         health = MAX_HEALTH;
         hunger = MAX_HUNGER;
         location[0] = x;
         location[1] = y;
+        this.map = map;
+        this.assignedHouse = house;
         alive = true;
     }
 
@@ -110,7 +113,7 @@ public class Pawn extends Inventory implements Placeable {
     }
 
     public void setName(String name) throws PawnException {
-        if (Map.pawnExists(name)) {
+        if (map.pawnExists(name)) {
             throw new PawnException("A pawn with that name already exists");
         } else {
             this.name = name;
@@ -126,8 +129,8 @@ public class Pawn extends Inventory implements Placeable {
     }
 
     public void assignWarehouse(int x, int y) throws MapParametersException {
-        Object warehouse = Map.getObjectAt(x, y);
-        if (x <= 0 | x > Map.xWidth | y <= 0 | y > Map.yHeight) {
+        Object warehouse = map.getObjectAt(x, y);
+        if (x <= 0 | x > map.getXWidth() | y <= 0 | y > map.getYHeight()) {
             throw new MapParametersException("Cant select a warehouse not on the map");
         } else if (!(warehouse instanceof Warehouse)) {
             throw new MapParametersException("No Warehouse at that location");
@@ -137,8 +140,8 @@ public class Pawn extends Inventory implements Placeable {
     }
 
     public void assignResource(int x, int y) throws MapParametersException {
-        Object resource = Map.getObjectAt(x, y);
-        if (x <= 0 | x > Map.xWidth | y <= 0 | y > Map.yHeight) {
+        Object resource = map.getObjectAt(x, y);
+        if (x <= 0 | x > map.getXWidth() | y <= 0 | y > map.getYHeight()) {
             throw new MapParametersException("Cant select a resource not on the map");
         } else if (!(resource instanceof Resource)) {
             throw new MapParametersException("No resource at that location");
