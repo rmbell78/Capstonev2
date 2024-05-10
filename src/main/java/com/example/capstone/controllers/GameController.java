@@ -12,15 +12,48 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
 public class GameController {
     @FXML
-    Canvas GameCanvas;
+    public Text Pawn_Schedule;
+    
+    @FXML
+    public Canvas GameCanvas;
 
     @FXML
-    VBox PawnList;
+    public VBox PawnList;
+    
+    @FXML
+    public Text Pawn_Warehouse;
+    
+    @FXML
+    public Text Pawn_House;
+    
+    @FXML
+    public Text Pawn_Resource;
+    
+    @FXML
+    public Text Pawn_Wood;
+    
+    @FXML
+    public Text Pawn_Food;
+    
+    @FXML
+    public Text Pawn_Job;
+    
+    @FXML
+    public Text Pawn_Hunger;
+
+    @FXML
+    public Text Pawn_Health;
+
+    @FXML
+    public Rectangle House_Count;
+
 
     int boxDimensions = 22;
     Map map;
@@ -36,6 +69,8 @@ public class GameController {
             Pawn workingPawn = (Pawn) pawn;
             pawnButton = new Button(workingPawn.getName());
             pawnButton.setOnAction(eventHandler);
+            pawnButton.idProperty();
+            pawnButton.setId(workingPawn.getName());
             PawnList.getChildren().add(pawnButton);
             buttonList.add(pawnButton);
         }
@@ -136,6 +171,10 @@ public class GameController {
 
     }
 
+    public void setStats(String pawnName){
+        Pawn pawn = (Pawn) map.getPawn(pawnName);
+        System.out.println("Set stats");
+    }
     @FXML
     protected void onMenuButtonClick() {
         System.out.println("Pressed");
@@ -155,10 +194,15 @@ public class GameController {
             System.out.println("Handled");
             System.out.println(buttonList);
             System.out.println(event.getSource().getClass());
+            System.out.println(event.getSource().getClass().hashCode());
+            Button workingButton = (Button) event.getSource();
+            System.out.println(workingButton.getId());
             if(event.getSource() == pawnButton){
                 System.out.println(event.getSource().toString());
                 System.out.println("Handled 2");
             }
+            //Testing
+            setStats("Bob");
 
         }
     };

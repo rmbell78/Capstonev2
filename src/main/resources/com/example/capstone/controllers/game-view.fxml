@@ -23,32 +23,32 @@
          <children>
             <StackPane prefHeight="50.0" prefWidth="125.0">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="50.0" stroke="BLACK" strokeType="INSIDE" width="125.0" />
+                  <Rectangle fx:id="Population_Count" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="50.0" stroke="BLACK" strokeType="INSIDE" width="125.0" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Population #/#" />
                </children>
             </StackPane>
             <StackPane prefHeight="50.0" prefWidth="125.0">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="50.0" stroke="BLACK" strokeType="INSIDE" width="125.0" />
+                  <Rectangle fx:id="Food_Count" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="50.0" stroke="BLACK" strokeType="INSIDE" width="125.0" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Food #/#" />
                </children>
             </StackPane>
             <StackPane prefHeight="50.0" prefWidth="125.0">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="50.0" stroke="BLACK" strokeType="INSIDE" width="125.0" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Wood #/#" />
+                  <Text fx:id="Wood_Count" strokeType="OUTSIDE" strokeWidth="0.0" text="Wood #/#" />
                </children>
             </StackPane>
             <StackPane prefHeight="50.0" prefWidth="125.0">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="50.0" stroke="BLACK" strokeType="INSIDE" width="125.0" />
+                  <Rectangle fx:id="House_Count" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="50.0" stroke="BLACK" strokeType="INSIDE" width="125.0" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Houses #" />
                </children>
             </StackPane>
             <StackPane prefHeight="50.0" prefWidth="125.0">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="50.0" stroke="BLACK" strokeType="INSIDE" width="125.0" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Time" />
+                  <Text fx:id="Time" strokeType="OUTSIDE" strokeWidth="0.0" text="Time" />
                </children>
                <opaqueInsets>
                   <Insets />
@@ -62,7 +62,7 @@
       <Canvas fx:id="GameCanvas" height="760.0" layoutY="90.0" width="700.0" />
       <ScrollPane hbarPolicy="NEVER" layoutX="701.0" layoutY="74.0" prefHeight="250.0" prefWidth="200.0" vbarPolicy="ALWAYS">
          <content>
-            <VBox  fx:id="PawnList" prefWidth="200.0" />
+            <VBox fx:id="PawnList" prefWidth="200.0" />
          </content>
       </ScrollPane>
       <StackPane layoutX="706.0" layoutY="42.0" prefHeight="30.0" prefWidth="190.0">
@@ -82,31 +82,31 @@
             <StackPane prefHeight="50.0" prefWidth="200.0">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="180.0" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Health #/#" />
+                  <Text fx:id="Pawn_Health" strokeType="OUTSIDE" strokeWidth="0.0" text="Health #/#" />
                </children>
             </StackPane>
             <StackPane prefHeight="50.0" prefWidth="200.0">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="180.0" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Hunger #/#" />
+                  <Text fx:id="Pawn_Hunger" strokeType="OUTSIDE" strokeWidth="0.0" text="Hunger #/#" />
                </children>
             </StackPane>
             <StackPane prefHeight="50.0" prefWidth="200.0">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="180.0" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Job: " />
+                  <Text fx:id="Pawn_Job" strokeType="OUTSIDE" strokeWidth="0.0" text="Job: " />
                </children>
             </StackPane>
             <StackPane prefHeight="50.0" prefWidth="200.0">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="180.0" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Food #/#" />
+                  <Text fx:id="Pawn_Food" strokeType="OUTSIDE" strokeWidth="0.0" text="Food #/#" />
                </children>
             </StackPane>
             <StackPane prefHeight="50.0" prefWidth="200.0">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="180.0" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Wood #/#" />
+                  <Text fx:id="Pawn_Wood" strokeType="OUTSIDE" strokeWidth="0.0" text="Wood #/#" />
                </children>
             </StackPane>
          </children>
@@ -124,7 +124,7 @@
                   <StackPane prefHeight="30.0" prefWidth="130.0">
                      <children>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="130.0" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Resource @ x,y" />
+                        <Text fx:id="Pawn_Resource" strokeType="OUTSIDE" strokeWidth="0.0" text="Resource @ x,y" />
                      </children>
                   </StackPane>
                   <Button mnemonicParsing="false" text="Change" />
@@ -141,7 +141,7 @@
                   <StackPane prefHeight="30.0" prefWidth="130.0">
                      <children>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="130.0" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="House @ x,y" />
+                        <Text fx:id="Pawn_House" strokeType="OUTSIDE" strokeWidth="0.0" text="House @ x,y" />
                      </children>
                   </StackPane>
                   <Button mnemonicParsing="false" text="Change" />
@@ -158,7 +158,7 @@
                   <StackPane prefHeight="30.0" prefWidth="130.0">
                      <children>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="130.0" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Warehouse" />
+                        <Text fx:id="Pawn_Warehouse" strokeType="OUTSIDE" strokeWidth="0.0" text="Warehouse" />
                      </children>
                   </StackPane>
                   <Button mnemonicParsing="false" text="Change" />
@@ -175,7 +175,7 @@
                   <StackPane prefHeight="30.0" prefWidth="130.0">
                      <children>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="130.0" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" Time : Time" />
+                        <Text fx:id="Pawn_Schedule" strokeType="OUTSIDE" strokeWidth="0.0" text=" Time : Time" />
                      </children>
                   </StackPane>
                   <Button mnemonicParsing="false" text="Change" />
