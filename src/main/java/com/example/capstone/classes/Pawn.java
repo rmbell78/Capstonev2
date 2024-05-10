@@ -162,13 +162,34 @@ public class Pawn extends Inventory implements Placeable {
         }
     }
 
+    public Object getAssignedHouse(){return assignedHouse;}
+
+    public Object getAssignedResource() {
+        return assignedResource;
+    }
+
+    public String getJob(){
+        String job = "None";
+        if(assignedResource instanceof Tree){
+            job = "Gather wood";
+        }
+        if(assignedResource instanceof Bush){
+            job = "Gather food";
+        }
+        return job;
+    }
+
     public int getHunger() {
         return hunger;
     }
 
+    public int getMaxHunger(){return MAX_HUNGER;}
+
     public int getHealth() {
         return health;
     }
+
+    public int getMaxHealth(){return MAX_HEALTH;}
 
     public void goTo(Object object) {
         int targetX = 0, targetY = 0;

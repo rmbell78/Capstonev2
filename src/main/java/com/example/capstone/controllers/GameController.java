@@ -20,31 +20,31 @@ import java.util.ArrayList;
 public class GameController {
     @FXML
     public Text Pawn_Schedule;
-    
-    @FXML
-    public Canvas GameCanvas;
 
     @FXML
-    public VBox PawnList;
-    
+    public Canvas Game_Canvas;
+
+    @FXML
+    public VBox Pawn_List;
+
     @FXML
     public Text Pawn_Warehouse;
-    
+
     @FXML
     public Text Pawn_House;
-    
+
     @FXML
     public Text Pawn_Resource;
-    
+
     @FXML
     public Text Pawn_Wood;
-    
+
     @FXML
     public Text Pawn_Food;
-    
+
     @FXML
     public Text Pawn_Job;
-    
+
     @FXML
     public Text Pawn_Hunger;
 
@@ -54,16 +54,19 @@ public class GameController {
     @FXML
     public Rectangle House_Count;
 
+    @FXML
+    public Text Pawn_Name;
+
 
     int boxDimensions = 22;
     Map map;
     Button pawnButton;
-    ArrayList<Button> buttonList;
+    ArrayList<Button> pawnButtonList;
 
     public void initialize() {
         map = startGame();
         drawMap();
-        buttonList = new ArrayList<>();
+        pawnButtonList = new ArrayList<>();
         ArrayList<Object> pawnList = map.getPawns();
         for (Object pawn : pawnList) {
             Pawn workingPawn = (Pawn) pawn;
@@ -71,8 +74,8 @@ public class GameController {
             pawnButton.setOnAction(eventHandler);
             pawnButton.idProperty();
             pawnButton.setId(workingPawn.getName());
-            PawnList.getChildren().add(pawnButton);
-            buttonList.add(pawnButton);
+            Pawn_List.getChildren().add(pawnButton);
+            pawnButtonList.add(pawnButton);
         }
 
     }
@@ -128,7 +131,7 @@ public class GameController {
         ArrayList<Object> warehouses = map.getWarehouses();
         int x = map.getXWidth();
         int y = map.getYHeight();
-        GraphicsContext gc = GameCanvas.getGraphicsContext2D();
+        GraphicsContext gc = Game_Canvas.getGraphicsContext2D();
         Image pawnImage = new Image(String.valueOf(getClass().getResource("images/Pawn.jpg")), boxDimensions, boxDimensions, false, false);
         Image bushImage = new Image(String.valueOf(getClass().getResource("images/Tomato.jpg")), boxDimensions, boxDimensions, false, false);
         Image treeImage = new Image(String.valueOf(getClass().getResource("images/Tree.jpg")), boxDimensions, boxDimensions, false, false);
@@ -171,10 +174,45 @@ public class GameController {
 
     }
 
-    public void setStats(String pawnName){
-        Pawn pawn = (Pawn) map.getPawn(pawnName);
-        System.out.println("Set stats");
+    public void setStats(String setPawnName) {
+        Pawn pawn = (Pawn) map.getPawn(setPawnName);
+        Pawn_Name.setText(setPawnName);
+        Pawn_Health.setText("Health: " + String.valueOf(pawn.getHealth()) + " / " + String.valueOf(pawn.getMaxHealth()));
+        Pawn_Food.setText("Food: " + String.valueOf(pawn.getFood()) + " / " + String.valueOf(pawn.getFoodMax()));
+        Pawn_Hunger.setText("Hunger: " + String.valueOf(pawn.getHunger()) + " / " + String.valueOf(pawn.getMaxHunger()));
+        Pawn_Wood.setText("Wood: " + String.valueOf(pawn.getWood()) + " / " + String.valueOf(pawn.getWoodMax()));
+        Pawn_Job.setText("Job: " + pawn.getJob());
+
+        House pawn_House = (House) pawn.getAssignedHouse();
+        Resource pawn_Resource = (Resource) pawn.getAssignedResource();
+
+
+        Pawn_House.setText("House at X: " + pawn_House.getX() + ", Y: " + pawn_House.getY());
+
+        switch (pawn_Resource) {
+            case null -> Pawn_Resource.setText("None");
+            case Tree tree ->
+                    Pawn_Resource.setText("Tree at X:" + pawn_Resource.getX() + ", Y: " + pawn_Resource.getY());
+            case Bush bush ->
+                    Pawn_Resource.setText("Tree at X:" + pawn_Resource.getX() + ", Y: " + pawn_Resource.getY());
+            default -> {
+            }
+        }
+
+
     }
+
+    public boolean isPawnButton(Event event) {
+        if (event.getSource() instanceof Button) {
+            for (Button pawnButton : pawnButtonList) {
+                if (pawnButton == event.getSource()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     @FXML
     protected void onMenuButtonClick() {
         System.out.println("Pressed");
@@ -182,8 +220,8 @@ public class GameController {
 
     @FXML
     protected void onNextButtonClick() {
-        GraphicsContext gc = GameCanvas.getGraphicsContext2D();
-        gc.clearRect(0, 0, GameCanvas.getHeight(), GameCanvas.getWidth());
+        GraphicsContext gc = Game_Canvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, Game_Canvas.getHeight(), Game_Canvas.getWidth());
         map.tick();
         drawMap();
     }
@@ -191,18 +229,10 @@ public class GameController {
     EventHandler eventHandler = new EventHandler() {
         @Override
         public void handle(Event event) {
-            System.out.println("Handled");
-            System.out.println(buttonList);
-            System.out.println(event.getSource().getClass());
-            System.out.println(event.getSource().getClass().hashCode());
-            Button workingButton = (Button) event.getSource();
-            System.out.println(workingButton.getId());
-            if(event.getSource() == pawnButton){
-                System.out.println(event.getSource().toString());
-                System.out.println("Handled 2");
+            if (isPawnButton(event)) {
+                Button pawnButton = (Button) event.getSource();
+                setStats(pawnButton.getId());
             }
-            //Testing
-            setStats("Bob");
 
         }
     };

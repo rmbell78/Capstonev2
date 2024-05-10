@@ -59,10 +59,10 @@
             </StackPane>
          </children>
       </HBox>
-      <Canvas fx:id="GameCanvas" height="760.0" layoutY="90.0" width="700.0" />
+      <Canvas fx:id="Game_Canvas" height="760.0" layoutY="90.0" width="700.0" />
       <ScrollPane hbarPolicy="NEVER" layoutX="701.0" layoutY="74.0" prefHeight="250.0" prefWidth="200.0" vbarPolicy="ALWAYS">
          <content>
-            <VBox fx:id="PawnList" prefWidth="200.0" />
+            <VBox fx:id="Pawn_List" prefWidth="200.0" />
          </content>
       </ScrollPane>
       <StackPane layoutX="706.0" layoutY="42.0" prefHeight="30.0" prefWidth="190.0">
@@ -74,7 +74,7 @@
       <StackPane layoutX="905.0" layoutY="42.0" prefHeight="30.0" prefWidth="190.0">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="30.0" stroke="BLACK" strokeType="INSIDE" width="190.0" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Selected Pawn Name" />
+            <Text fx:id="Pawn_Name" strokeType="OUTSIDE" strokeWidth="0.0" text="Selected Pawn Name" />
          </children>
       </StackPane>
       <VBox layoutX="906.0" layoutY="74.0" prefHeight="250.0" prefWidth="190.0">
