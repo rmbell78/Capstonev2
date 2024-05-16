@@ -1,21 +1,37 @@
 package com.example.capstone.controllers;
 
 import com.example.capstone.classes.*;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.scene.control.TextField;
 
+import javax.swing.*;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static javafx.scene.paint.Color.DODGERBLUE;
 
 public class GameController {
     @FXML
@@ -52,16 +68,34 @@ public class GameController {
     public Text Pawn_Health;
 
     @FXML
-    public Rectangle House_Count;
+    public Text House_Count;
 
     @FXML
     public Text Pawn_Name;
+
+    @FXML
+    public Text Population_Count;
+
+    @FXML
+    public Text Food_Count;
+
+    @FXML
+    public Text Wood_Count;
+
+    @FXML
+    public Text Pawn_Current_Task;
+    public Text Time;
+    public VBox Text_Box;
+    public ScrollPane Text_Scroll_Pane;
+
 
 
     int boxDimensions = 22;
     Map map;
     Button pawnButton;
     ArrayList<Button> pawnButtonList;
+    String selectedPawn;
+    boolean playPause = false;
 
     public void initialize() {
         map = startGame();
@@ -77,6 +111,7 @@ public class GameController {
             Pawn_List.getChildren().add(pawnButton);
             pawnButtonList.add(pawnButton);
         }
+        Text_Scroll_Pane.setVvalue(1.0);
 
     }
 
@@ -88,7 +123,7 @@ public class GameController {
         int createHouseAtX = map.getXWidth() / 2;
         while (!goodGen) {
             try {
-                map.createHouse(createHouseAtX, map.getYHeight() / 2);
+                map.createHouseNoResources(createHouseAtX, map.getYHeight() / 2);
                 goodGen = true;
             } catch (MapParametersException mpe) {
                 System.out.println(mpe);
@@ -137,6 +172,7 @@ public class GameController {
         Image treeImage = new Image(String.valueOf(getClass().getResource("images/Tree.jpg")), boxDimensions, boxDimensions, false, false);
         Image wareHouseImage = new Image(String.valueOf(getClass().getResource("images/Warehouse.jpeg")), boxDimensions, boxDimensions, false, false);
         Image houseImage = new Image(String.valueOf(getClass().getResource("images/House.png")), boxDimensions, boxDimensions, false, false);
+        Image deadPawn = new Image(String.valueOf(getClass().getResource("images/Tombstone.jpg")), boxDimensions, boxDimensions, false, false);
         for (int i = 0; i <= y; i++) {
             for (int j = 0; j <= x; j++) {
                 gc.setStroke(Color.LIGHTBLUE);
@@ -148,7 +184,11 @@ public class GameController {
 
         for (Object pawn : pawns) {
             Pawn workingPawn = (Pawn) pawn;
-            gc.drawImage(pawnImage, workingPawn.getX() * boxDimensions, workingPawn.getY() * boxDimensions);
+            if (((Pawn) pawn).isAlive()){
+                gc.drawImage(pawnImage, workingPawn.getX() * boxDimensions, workingPawn.getY() * boxDimensions);
+            }else{
+                gc.drawImage(deadPawn, workingPawn.getX() * boxDimensions, workingPawn.getY() * boxDimensions);
+            }
         }
 
         for (Object house : houses) {
@@ -171,6 +211,22 @@ public class GameController {
             gc.drawImage(wareHouseImage, workingWareHouse.getX() * boxDimensions, workingWareHouse.getY() * boxDimensions);
         }
 
+        Population_Count.setText("Population: " + map.getPawns().size() + " / " + map.getHouses().size() * House.HOUSE_CAPACITY);
+        Food_Count.setText("Food: " + ((Warehouse) warehouses.getFirst()).getFood() + " / " + Warehouse.MAX_FOOD);
+        Wood_Count.setText("Wood: " + ((Warehouse) warehouses.getFirst()).getWood() + " / " + Warehouse.MAX_WOOD);
+        House_Count.setText("Houses: " + map.getHouses().size());
+        if(map.getMinutes() == 0){
+            Time.setText("Day: " + map.getDay() + " " + map.getHours() + ":00");
+        }else{
+            Time.setText("Day: " + map.getDay() + " " + map.getHours() + ":" + map.getMinutes());
+        }
+
+        for(Object pawn : pawns){
+            Pawn working_pawn = (Pawn) pawn;
+            if (working_pawn.getAssignedResource() == null){
+                addMessage(working_pawn.getName() + " has no job!");
+            }
+        }
 
     }
 
@@ -189,17 +245,29 @@ public class GameController {
 
         Pawn_House.setText("House at X: " + pawn_House.getX() + ", Y: " + pawn_House.getY());
 
-        switch (pawn_Resource) {
-            case null -> Pawn_Resource.setText("None");
-            case Tree tree ->
-                    Pawn_Resource.setText("Tree at X:" + pawn_Resource.getX() + ", Y: " + pawn_Resource.getY());
-            case Bush bush ->
-                    Pawn_Resource.setText("Tree at X:" + pawn_Resource.getX() + ", Y: " + pawn_Resource.getY());
-            default -> {
-            }
+        if (pawn_Resource == null){
+            Pawn_Resource.setText("None");
+        } else if(pawn_Resource instanceof Tree){
+            Pawn_Resource.setText("Tree at X:" + pawn_Resource.getX() + ", Y: " + pawn_Resource.getY());
+        } else if (pawn_Resource instanceof Bush){
+            Pawn_Resource.setText("Bush at X:" + pawn_Resource.getX() + ", Y: " + pawn_Resource.getY());
+        }
+
+        switch (pawn.getTask()){
+            case 0: Pawn_Current_Task.setText("Sleeping");
+            break;
+            case 1: Pawn_Current_Task.setText("Harvesting resource");
+            break;
+            case 2: Pawn_Current_Task.setText("Returning to warehouse");
+            break;
         }
 
 
+    }
+
+    private void addMessage(String message){
+        Text messageText = new Text(message);
+        Text_Box.getChildren().add(messageText);
     }
 
     public boolean isPawnButton(Event event) {
@@ -223,17 +291,214 @@ public class GameController {
         GraphicsContext gc = Game_Canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, Game_Canvas.getHeight(), Game_Canvas.getWidth());
         map.tick();
+        if(selectedPawn != null){
+            setStats(selectedPawn);
+        }
+        //TODO add randomly spawning pawns
         drawMap();
+    }
+
+
+    private boolean isSetResourceButton(Event event){
+        if (event.getSource() instanceof Button){
+            String idString = ((Button) event.getSource()).getId();
+            if(idString.substring(0,idString.indexOf(":")).equals("assign_resource")){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private  boolean isSetHouseButton(Event event){
+        if (event.getSource() instanceof Button){
+            String idString = ((Button) event.getSource()).getId();
+            if(idString.substring(0,idString.indexOf(":")).equals("assign_house")){
+                return true;
+            }
+        }
+        return false;
     }
 
     EventHandler eventHandler = new EventHandler() {
         @Override
         public void handle(Event event) {
-            if (isPawnButton(event)) {
+            if(event.getSource() instanceof TextField){
+                TextField text = (TextField) event.getSource();
+                System.out.println(text.getCharacters());
+                String textString = String.valueOf(text.getCharacters());
+                int x = 100, y = 100;
+                boolean valid = true;
+                boolean assignment = true;
+                try{
+                    x = Integer.parseInt(textString.substring(0,textString.indexOf(",")));
+                } catch (NumberFormatException | StringIndexOutOfBoundsException nfe){
+                    addMessage("Not valid input");
+                    valid = false;
+                    assignment = false;
+                }
+                try{
+                    y = Integer.parseInt(textString.substring(textString.indexOf(",") + 1));
+                } catch (NumberFormatException | StringIndexOutOfBoundsException nfe){
+                    addMessage("Not valid input");
+                    valid = false;
+                    assignment = false;
+                }
+                if(valid){
+                    try{
+                        map.createHouse(x,y);
+                    }catch (MapParametersException | HouseException e) {
+                        addMessage(e.getMessage());
+                        assignment = false;
+                    }
+                }
+                if(assignment){
+                    addMessage("House added successfully");
+                }
+
+                Scene scene = text.getScene();
+                Stage stage = (Stage) scene.getWindow();
+                stage.close();
+                drawMap();
+            } else if (isPawnButton(event)) {
                 Button pawnButton = (Button) event.getSource();
                 setStats(pawnButton.getId());
+                selectedPawn = pawnButton.getId();
+            } else if(isSetResourceButton(event)){
+                boolean assignment = true;
+                Button resourceButton = (Button) event.getSource();
+                String idString = resourceButton.getId();
+                Pawn pawn = (Pawn) map.getPawn(selectedPawn);
+                int x = Integer.parseInt(idString.substring(idString.indexOf(" ") + 1, idString.indexOf(",")));
+                int y = Integer.parseInt(idString.substring(idString.indexOf(",") + 1));
+                try {
+                    pawn.assignResource(x,y);
+                } catch (MapParametersException e) {
+                    assignment = false;
+                }
+                setStats(selectedPawn);
+                if(assignment){
+                    addMessage("Resource assignment for " + selectedPawn + " Succeeded");
+                } else{
+                    addMessage("Resource assignment for " + selectedPawn + " Failed");
+                }
+                Scene scene = resourceButton.getScene();
+                Stage stage = (Stage) scene.getWindow();
+                stage.close();
+
+            } else if(isSetHouseButton(event)){
+                boolean assignment = true;
+                Button houseButton = (Button) event.getSource();
+                String idString = houseButton.getId();
+                Pawn pawn = (Pawn) map.getPawn(selectedPawn);
+                int x = Integer.parseInt(idString.substring(idString.indexOf(" ") + 1, idString.indexOf(",")));
+                int y = Integer.parseInt(idString.substring(idString.indexOf(",") + 1));
+                try {
+                    pawn.assignHouse(map.getObjectAt(x,y));
+                } catch (HouseException he) {
+                    addMessage(he.getMessage());
+                    assignment = false;
+                }
+                if (assignment){
+                    addMessage("House assignment successful");
+                }
+                Scene scene = houseButton.getScene();
+                Stage stage = (Stage) scene.getWindow();
+                stage.close();
             }
 
         }
     };
+
+    public void assignResource() {
+        if(selectedPawn != null){
+            ArrayList<Object> resources = map.getResources();
+            VBox box = new VBox();
+
+            StackPane topLabel = new StackPane();
+            Rectangle topRectangle = new Rectangle(200,20);
+            topRectangle.setFill(DODGERBLUE);
+            Text lText = new Text("Assign resource for: " + selectedPawn);
+            topLabel.getChildren().addAll(topRectangle,lText);
+            box.getChildren().add(topLabel);
+            
+            for(Object resource : resources){
+                String buttonText = "";
+                Button button = null;
+                if (resource instanceof Tree){
+                    buttonText = "Tree at X: " + ((Tree) resource).getX() + " Y: " + ((Tree) resource).getY();
+                    button = new Button(buttonText);
+                    button.setId("assign_resource: " + ((Tree) resource).getX() + "," + ((Tree) resource).getY());
+                    button.setOnAction(eventHandler);
+
+                } else if(resource instanceof Bush){
+                    buttonText = "Bush at X: " + ((Bush) resource).getX() + " Y: " + ((Bush) resource).getY();
+                    button = new Button(buttonText);
+                    button.setId("assign_resource: " + ((Bush) resource).getX() + "," + ((Bush) resource).getY());
+                    button.setOnAction(eventHandler);
+                }
+                box.getChildren().add(button);
+            }
+
+
+
+            Scene assignResource = new Scene(box,200,450);
+
+            Stage stage = new Stage();
+            stage.setScene(assignResource);
+            stage.show();
+        }
+
+
+    }
+
+    public void assignHouse(){
+        if(selectedPawn != null){
+            ArrayList<Object> houses = map.getHouses();
+            VBox box = new VBox();
+
+            StackPane topLabel = new StackPane();
+            Rectangle topRectangle = new Rectangle(200,20);
+            topRectangle.setFill(DODGERBLUE);
+            Text lText = new Text("Assign house for: " + selectedPawn);
+            topLabel.getChildren().addAll(topRectangle,lText);
+            box.getChildren().add(topLabel);
+
+            for(Object house : houses){
+                String buttonText = "";
+                Button button = null;
+                    buttonText = "House at X: " + ((House) house).getX() + " Y: " + ((House) house).getY();
+                    button = new Button(buttonText);
+                    button.setId("assign_house: " + ((House) house).getX() + "," + ((House) house).getY());
+                    button.setOnAction(eventHandler);
+                box.getChildren().add(button);
+            }
+
+
+
+            Scene assignHouse = new Scene(box,200,450);
+
+            Stage stage = new Stage();
+            stage.setScene(assignHouse);
+            stage.show();
+        }
+    }
+
+    public void addAHouse(){
+        VBox box = new VBox();
+
+        StackPane topLabel = new StackPane();
+        Rectangle topRectangle = new Rectangle(200,20);
+        topRectangle.setFill(DODGERBLUE);
+        Text lText = new Text("Add a house");
+        topLabel.getChildren().addAll(topRectangle,lText);
+        box.getChildren().add(topLabel);
+        TextField tf = new TextField("X, Y");
+        tf.setOnAction(eventHandler);
+        box.getChildren().add(tf);
+
+        Scene addHouse = new Scene(box,200,200);
+        Stage stage = new Stage();
+        stage.setScene(addHouse);
+        stage.show();
+    }
 }

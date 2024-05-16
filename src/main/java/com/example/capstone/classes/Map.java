@@ -1,6 +1,7 @@
 package com.example.capstone.classes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Map {
     static ArrayList<Object> mapObjects = new ArrayList<Object>();
@@ -12,7 +13,8 @@ public class Map {
     private final int NUM_STARTING_PAWNS = 3;
     static final int DEFAULT_SIZE = 30;
     private int numHouses;
-    private int hours = 8, day, minutes;
+    private int hours = 5, day = 1, minutes;
+    private ArrayList<String> firstNames = new ArrayList<>(Arrays.asList("Bob", "Amy", "Jeff", "Doug", "Gertrude", "George"));
 
     /**
      * Constructs a new Map with default size.
@@ -143,14 +145,29 @@ public class Map {
         }
     }
 
-    public void createHouse(int x, int y) throws MapParametersException {
+    public void createHouseNoResources(int x, int y) throws MapParametersException {
+        if (x > xWidth | x <= 0 | y > yHeight | y <= 0) {
+            throw new MapParametersException("House is not on map");
+        } else if (isObjectAt(x, y)) {
+            throw new MapParametersException("There is already something at that location");
+        }
+        mapObjects.add(new House(x, y));
+        numHouses++;
+    }
+
+    public void createHouse(int x, int y) throws MapParametersException, HouseException {
         if (x > xWidth | x <= 0 | y > yHeight | y <= 0) {
             throw new MapParametersException("House is not on map");
         } else if (isObjectAt(x, y)) {
             throw new MapParametersException("There is already something at that location");
         } else {
-            mapObjects.add(new House(x, y));
-            numHouses++;
+            if(((Warehouse) this.getWarehouses().getFirst()).getWood() >= 5){
+                ((Warehouse) this.getWarehouses().getFirst()).useWood(5);
+                mapObjects.add(new House(x, y));
+                numHouses++;
+            } else{
+                throw new HouseException("Not enough wood!");
+            }
         }
     }
 
@@ -178,7 +195,6 @@ public class Map {
         int houseX = 0, houseY = 0;
         House house = null;
         int nameIndex = 0;
-        String[] firstNames = {"Bob", "Amy", "George"};
         // Maybe a while loop here instead, avoid going through the whole array list
         // everytime
         for (Object mapObject : mapObjects) {
@@ -192,29 +208,29 @@ public class Map {
         for (int i = 0; i < NUM_STARTING_PAWNS; i++) {
             if (!isObjectAt(houseX + 1, houseY)) {
                 try {
-                    createPawnAssignHouse(firstNames[nameIndex], houseX + 1, houseY, house);
-                    nameIndex++;
-                } catch (MapParametersException | PawnException | HouseException mpe) {
+                    createPawnAssignHouse(firstNames.getFirst(), houseX + 1, houseY, house);
+                    firstNames.removeFirst();
+                } catch (PawnException | HouseException | MapParametersException mpe) {
                     System.out.println(mpe.getMessage());
                 }
             } else if (!isObjectAt(houseX, houseY + 1)) {
                 try {
-                    createPawnAssignHouse(firstNames[nameIndex], houseX, houseY + 1, house);
-                    nameIndex++;
+                    createPawnAssignHouse(firstNames.getFirst(), houseX, houseY + 1, house);
+                    firstNames.removeFirst();
                 } catch (MapParametersException | PawnException | HouseException mpe) {
                     System.out.println(mpe.getMessage());
                 }
             } else if (houseX - 1 != 0 && !isObjectAt(houseX - 1, houseY)) {
                 try {
-                    createPawnAssignHouse(firstNames[nameIndex], houseX - 1, houseY, house);
-                    nameIndex++;
+                    createPawnAssignHouse(firstNames.getFirst(), houseX - 1, houseY, house);
+                    firstNames.removeFirst();
                 } catch (MapParametersException | PawnException | HouseException mpe) {
                     System.out.println(mpe.getMessage());
                 }
             } else if (houseY - 1 != 0 && !isObjectAt(houseX, houseY - 1)) {
                 try {
-                    createPawnAssignHouse(firstNames[nameIndex], houseX, houseY - 1, house);
-                    nameIndex++;
+                    createPawnAssignHouse(firstNames.getFirst(), houseX, houseY - 1, house);
+                    firstNames.removeFirst();
                 } catch (MapParametersException | PawnException | HouseException mpe) {
                     System.out.println(mpe.getMessage());
                 }
@@ -336,9 +352,6 @@ public class Map {
         return yHeight;
     }
 
-    public void draw() {
-
-    }
 
     public ArrayList<Object> getPawns() {
         ArrayList<Object> pawnList = new ArrayList<Object>();
@@ -397,13 +410,11 @@ public class Map {
     public boolean pawnExists(String name) {
         ArrayList<Object> pawnList = new ArrayList<Object>();
         boolean pawnExists = false;
-        System.out.println("PawnCheck");
         pawnList = getPawns();
         for (Object o : pawnList) {
             Pawn pawn = (Pawn) o;
             if (pawn.getName().equals(name)) {
                 pawnExists = true;
-                System.out.println("PawnTrue");
             }
         }
         return pawnExists;
@@ -415,17 +426,23 @@ public class Map {
             minutes = 0;
             hours++;
         }
-        if (hours == 25) {
+        if (hours == 24) {
             hours = 0;
             day++;
         }
 
         ArrayList<Object> pawnList = new ArrayList<Object>();
-        pawnList = getPawns();
+        pawnList = this.getPawns();
         for (Object o : pawnList) {
             Pawn pawn = (Pawn) o;
             pawn.tick();
         }
+    }
+
+    public String getNextName(){
+        String name = firstNames.getFirst();
+        firstNames.removeFirst();
+        return name;
     }
 
     public int getHours() {

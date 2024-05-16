@@ -1,5 +1,7 @@
 package com.example.capstone.classes;
 
+import com.example.capstone.controllers.GameController;
+
 public class Pawn extends Inventory implements Placeable {
     private int health;
     private int hunger;
@@ -14,8 +16,9 @@ public class Pawn extends Inventory implements Placeable {
     private boolean alive;
     private String name = "NA";
     private Map map;
+    private int task; //0 for sleep, 1 for harvest resources, 2 for return to warehouse.
 
-    public Pawn(String name, int x, int y, House house, Map map) {
+    public Pawn(String name, int x, int y, House house, Map map) throws HouseException {
         super(0, 0, 5, 5);
         health = MAX_HEALTH;
         hunger = MAX_HUNGER;
@@ -29,55 +32,57 @@ public class Pawn extends Inventory implements Placeable {
 
     public void tick() {
         int time = map.getHours();
-        if (time > 6 && time < 20) {
-            work();
-            System.out.println("Working");
-        } else if (time < 6 | time > 20) {
-            sleep();
-            System.out.println("Sleeping");
-        }
-        if (time % 2 == 0) {
-            if (hunger > 0) {
-                hunger--;
+        if(alive){
+            if (time > 6 && time < 20) {
+                work();
+            } else if (time < 6 | time > 20) {
+                setTask(0);
+                sleep();
+            }
+            if (time == 8 | time == 16) {
+                if (hunger > 0) {
+                    hunger--;
+                }
+            }
+            if (hunger <= 3) {
+                eat();
+            }
+            if (hunger == 0) {
+                damage(1);
             }
         }
-        if (hunger <= 3) {
-            eat();
-        }
-        if (hunger == 0) {
-            damage(1);
-        }
-
     }
 
     public void work() {
         Resource resource = (Resource) assignedResource;
         if(assignedResource != null) {
-            int workMode = 0; // 1 for harvest resource 2 for return to warehouse
             if (resource.getResourceType().equals("tree")) {
                 if (super.getWood() < super.getWoodMax()) {
-                    workMode = 1;
+                    setTask(1);
                 } else {
-                    workMode = 2;
+                    setTask(2);
                 }
             } else if (resource.getResourceType().equals("bush")) {
                 if (super.getFood() < super.getFoodMax()) {
-                    workMode = 1;
+                    setTask(1);
                 } else {
-                    workMode = 2;
+                    setTask(2);
                 }
             }
-            if (workMode == 1) {
+            if (task == 1) {
                 if (isAtLocation(assignedResource)) {
                     harvest();
                 } else {
                     goTo(assignedResource);
+                    System.out.println("Moving");
                 }
-            } else if (workMode == 2) {
+            } else if (task == 2) {
                 if (isAtLocation(assignedWarehouse)) {
                     deliverResources();
+                    System.out.println("delivering");
                 } else {
                     goTo(assignedWarehouse);
+                    System.out.println("Moving");
                 }
             }
         }
@@ -98,8 +103,8 @@ public class Pawn extends Inventory implements Placeable {
         Warehouse warehouse = (Warehouse) assignedWarehouse;
         // testing
         System.out.println("delivering resources!!");
-        super.useFood(super.getFood() - warehouse.addFood(super.getFood()));
-        super.useWood(super.getWood() - warehouse.addWood(super.getWood()));
+        super.useFood(warehouse.addFood(super.getFood()));
+        super.useWood(warehouse.addWood(super.getWood()));
     }
 
     public void sleep() {
@@ -128,8 +133,17 @@ public class Pawn extends Inventory implements Placeable {
         return name;
     }
 
-    public void assignHouse(Object house) {
-        this.assignedHouse = house;
+    public void assignHouse(Object house) throws HouseException {
+        House workingHouse = (House) house;
+        if(assignedHouse.equals(workingHouse)){
+            throw new HouseException("Already a member of that house");
+        } else if(workingHouse.isFull()){
+            throw new HouseException("That house is full");
+
+        } else{
+            this.assignedHouse = house;
+            workingHouse.addOcuppants(this);
+        }
     }
 
     public void assignWarehouse(int x, int y) throws MapParametersException {
@@ -156,9 +170,10 @@ public class Pawn extends Inventory implements Placeable {
 
     public void damage(int damage) {
         if (health - damage <= 0) {
+            health = 0;
             alive = false;
         } else {
-            health -= damage;
+            health = health - damage;
         }
     }
 
@@ -192,6 +207,7 @@ public class Pawn extends Inventory implements Placeable {
     public int getMaxHealth(){return MAX_HEALTH;}
 
     public void goTo(Object object) {
+        System.out.println("Going to");
         int targetX = 0, targetY = 0;
         int spacesMoved = 0;
         if (object instanceof House) {
@@ -217,6 +233,7 @@ public class Pawn extends Inventory implements Placeable {
                 } else if (deltaX > 0) {
                     location[0]--;
                 }
+                spacesMoved++;
             } else {
                 if (deltaY < 0) {
                     location[1]++;
@@ -259,6 +276,17 @@ public class Pawn extends Inventory implements Placeable {
         }
     }
 
+    private void setTask(int task){
+        this.task = task;
+    }
+
+    public int getTask(){
+        return task;
+    }
+
+    public boolean isAlive(){
+        return alive;
+    }
     @Override
     public int getX() {
         return location[0];
