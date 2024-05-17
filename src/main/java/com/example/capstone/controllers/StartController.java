@@ -14,6 +14,9 @@ import java.util.Objects;
 /**
  * The {@code StartController} class handles the actions for the start menu buttons.
  * It manages the navigation to different scenes such as the game view and information view.
+ *
+ * @author Ryan Bell w7346754@student.miracosta.edu
+ * @version 2.0
  */
 public class StartController {
     public Button start_Menu_Start_Game;
@@ -31,7 +34,7 @@ public class StartController {
         Object loadView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("game-view.fxml")));
         Scene loadScene = new Scene((Parent) loadView);
 
-        Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
 
         window.setScene(loadScene);
         window.show();
@@ -56,7 +59,7 @@ public class StartController {
         Object loadView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("information-view.fxml")));
         Scene loadScene = new Scene((Parent) loadView);
 
-        Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
 
         window.setScene(loadScene);
         window.show();

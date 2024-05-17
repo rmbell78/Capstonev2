@@ -8,6 +8,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -15,12 +16,17 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.scene.control.TextField;
 
 import java.util.ArrayList;
 
 import static javafx.scene.paint.Color.DODGERBLUE;
 
+/**
+ * Main game controller class facilitating interaction between the user and the model via gui elements,
+ *
+ * @author Ryan Bell w7346754@student.miracosta.edu
+ * @version 2.0
+ */
 public class GameController {
     @FXML
     public Text Pawn_Currently_At;
@@ -74,11 +80,9 @@ public class GameController {
     public ScrollPane Text_Scroll_Pane;
 
 
-    int boxDimensions = 22;
-    Map map;
-    Button pawnButton;
-    ArrayList<Button> pawnButtonList;
-    String selectedPawn;
+    private Map map;
+    private ArrayList<Button> pawnButtonList;
+    private String selectedPawn;
 
     /**
      * Initializes the game controller.
@@ -107,9 +111,9 @@ public class GameController {
      *
      * @param pawn The pawn object for which the button is to be created and added.
      */
-    public void addPawnButton(Object pawn) {
+    private void addPawnButton(Object pawn) {
         Pawn workingPawn = (Pawn) pawn;
-        pawnButton = new Button(workingPawn.getName());
+        Button pawnButton = new Button(workingPawn.getName());
         pawnButton.setOnAction(this::handle);
         pawnButton.idProperty();
         pawnButton.setId(workingPawn.getName());
@@ -173,7 +177,7 @@ public class GameController {
      * The method also updates the population count, food count, wood count, house count, and time display.
      * If any pawn does not have an assigned resource or house, a message is added to the message box.
      */
-    public void drawMap() {
+    private void drawMap() {
         ArrayList<Object> pawns = map.getPawns();
         ArrayList<Object> houses = map.getHouses();
         ArrayList<Object> resources = map.getResources();
@@ -181,6 +185,7 @@ public class GameController {
         int x = map.getXWidth();
         int y = map.getYHeight();
         GraphicsContext gc = Game_Canvas.getGraphicsContext2D();
+        int boxDimensions = 22;
         Image pawnImage = new Image(String.valueOf(getClass().getResource("images/Pawn.jpg")), boxDimensions, boxDimensions, false, false);
         Image bushImage = new Image(String.valueOf(getClass().getResource("images/Tomato.jpg")), boxDimensions, boxDimensions, false, false);
         Image treeImage = new Image(String.valueOf(getClass().getResource("images/Tree.jpg")), boxDimensions, boxDimensions, false, false);
@@ -254,7 +259,7 @@ public class GameController {
      *
      * @param setPawnName The name of the pawn whose statistics are to be set and displayed.
      */
-    public void setStats(String setPawnName) {
+    private void setStats(String setPawnName) {
         Pawn pawn = (Pawn) map.getPawn(setPawnName);
         Pawn_Name.setText(setPawnName);
         Pawn_Health.setText("Health: " + pawn.getHealth() + " / " + pawn.getMaxHealth());
@@ -293,6 +298,7 @@ public class GameController {
         Pawn_Currently_At.setText(pawn.getX() + ", " + pawn.getY());
 
     }
+
     /**
      * Adds a message to the message box and scrolls to the bottom.
      * <p>
@@ -307,7 +313,7 @@ public class GameController {
         Text_Box.getChildren().add(messageText);
         Text_Scroll_Pane.setVvalue(1.0);
     }
-    
+
     /**
      * Checks if the event source is a pawn button.
      * <p>
@@ -318,7 +324,7 @@ public class GameController {
      * @param event The event to be checked.
      * @return {@code true} if the event source is a pawn button, {@code false} otherwise.
      */
-    public boolean isPawnButton(Event event) {
+    private boolean isPawnButton(Event event) {
         if (event.getSource() instanceof Button) {
             for (Button pawnButton : pawnButtonList) {
                 if (pawnButton == event.getSource()) {
@@ -335,7 +341,7 @@ public class GameController {
      * This method is triggered by the exit button click event and terminates the application.
      */
     @FXML
-    protected void onExitButtonClick() {
+    public void onExitButtonClick() {
         System.exit(0);
     }
 
@@ -346,7 +352,7 @@ public class GameController {
      * and redraws the map to reflect the new game state.
      */
     @FXML
-    protected void onNextButtonClick() {
+    public void onNextButtonClick() {
         GraphicsContext gc = Game_Canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, Game_Canvas.getHeight(), Game_Canvas.getWidth());
         map.tick();

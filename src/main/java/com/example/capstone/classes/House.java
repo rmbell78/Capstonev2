@@ -5,6 +5,9 @@ import java.util.ArrayList;
 /**
  * Represents a House that can be placed in the game.
  * A House has a specific location and can hold occupants up to a defined capacity.
+ *
+ * @author Ryan Bell w7346754@student.miracosta.edu
+ * @version 2.0
  */
 public class House implements Placeable {
     /**
@@ -52,7 +55,7 @@ public class House implements Placeable {
      *
      * @param oldOccupant the occupant to be removed
      */
-    public void removeOccupant(Object oldOccupant){
+    public void removeOccupant(Object oldOccupant) {
         houseOccupants.remove(oldOccupant);
     }
 
@@ -61,7 +64,7 @@ public class House implements Placeable {
      *
      * @return true if the house is full, false otherwise
      */
-    public boolean isFull(){
+    public boolean isFull() {
         return houseOccupants.size() == HOUSE_CAPACITY;
     }
 

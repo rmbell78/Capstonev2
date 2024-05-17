@@ -2,6 +2,9 @@ package com.example.capstone.classes;
 
 /**
  * Represents a Bush resource in the game.
+ *
+ * @author Ryan Bell w7346754@student.miracosta.edu
+ * @version 2.0
  */
 public class Bush extends Resource {
 

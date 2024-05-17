@@ -4,20 +4,23 @@ package com.example.capstone.classes;
  * The {@code Pawn} class represents a pawn in the game, which can perform various tasks
  * such as harvesting resources, returning to a warehouse, and sleeping. Pawns have health
  * and hunger attributes that need to be managed to keep them alive.
+ *
+ * @author Ryan Bell w7346754@student.miracosta.edu
+ * @version 2.0
  */
 public class Pawn extends Inventory implements Placeable {
-    private int health;
-    private int hunger;
     private final int[] location = new int[2];
-    Object assignedWarehouse;
-    Object assignedResource;
-    Object assignedHouse;
     // [x][y] base 1
     final private int MAX_HEALTH = 10;
     final private int MAX_HUNGER = 10;
-    private boolean alive;
     private final String name;
     private final Map map;
+    private Object assignedWarehouse;
+    private Object assignedResource;
+    private Object assignedHouse;
+    private int health;
+    private int hunger;
+    private boolean alive;
     private int task; // 0 for sleep, 1 for harvest resources, 2 for return to warehouse.
 
     /**
@@ -27,7 +30,7 @@ public class Pawn extends Inventory implements Placeable {
      * Sets the pawn's location to the specified coordinates.
      * Assigns the pawn to the specified house and map.
      * Sets the pawn's alive status to true.
-     * 
+     *
      * @param name  the name of the pawn
      * @param x     the x-coordinate of the pawn's location
      * @param y     the y-coordinate of the pawn's location
@@ -275,7 +278,7 @@ public class Pawn extends Inventory implements Placeable {
      * If the pawn is assigned to a tree, the job is "Gather wood".
      * If the pawn is assigned to a bush, the job is "Gather food".
      * If the pawn is not assigned to any resource, the job is "None".
-     * 
+     *
      * @return the current job of the pawn
      */
     public String getJob() {
@@ -291,7 +294,7 @@ public class Pawn extends Inventory implements Placeable {
 
     /**
      * Retrieves the current hunger level of the pawn.
-     * 
+     *
      * @return the current hunger level
      */
     public int getHunger() {
@@ -300,7 +303,7 @@ public class Pawn extends Inventory implements Placeable {
 
     /**
      * Retrieves the maximum hunger level of the pawn.
-     * 
+     *
      * @return the maximum hunger level
      */
     public int getMaxHunger() {
@@ -309,7 +312,7 @@ public class Pawn extends Inventory implements Placeable {
 
     /**
      * Retrieves the current health level of the pawn.
-     * 
+     *
      * @return the current health level
      */
     public int getHealth() {
@@ -318,7 +321,7 @@ public class Pawn extends Inventory implements Placeable {
 
     /**
      * Retrieves the maximum health level of the pawn.
-     * 
+     *
      * @return the maximum health level
      */
     public int getMaxHealth() {
@@ -331,7 +334,7 @@ public class Pawn extends Inventory implements Placeable {
      * The pawn will move one step at a time towards the target object's location.
      * The movement is determined by comparing the pawn's current location with the target's location.
      * The pawn will prioritize moving along the axis with the greater distance to the target.
-     * 
+     *
      * @param object the target object to move towards
      */
     public void goTo(Object object) {
@@ -392,6 +395,15 @@ public class Pawn extends Inventory implements Placeable {
     }
 
     /**
+     * Retrieves the current task of the pawn.
+     *
+     * @return the current task of the pawn
+     */
+    public int getTask() {
+        return task;
+    }
+
+    /**
      * Sets the task for the pawn.
      * <p>
      * The task determines what action the pawn will perform. Valid tasks are:
@@ -401,15 +413,6 @@ public class Pawn extends Inventory implements Placeable {
      */
     private void setTask(int task) {
         this.task = task;
-    }
-
-    /**
-     * Retrieves the current task of the pawn.
-     *
-     * @return the current task of the pawn
-     */
-    public int getTask() {
-        return task;
     }
 
     /**

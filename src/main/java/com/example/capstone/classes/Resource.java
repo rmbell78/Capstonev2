@@ -3,6 +3,9 @@ package com.example.capstone.classes;
 /**
  * Abstract class representing a resource that can be placed on the map.
  * Implements the Placeable interface to provide location functionality.
+ *
+ * @author Ryan Bell w7346754@student.miracosta.edu
+ * @version 2.0
  */
 public abstract class Resource implements Placeable {
     private final int[] location = new int[2];

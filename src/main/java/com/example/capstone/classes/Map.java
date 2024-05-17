@@ -3,12 +3,19 @@ package com.example.capstone.classes;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * The {@code Map} class is used to store map items within a certain sized map grid and facilitate creation and updating of those items
+ * It allows creating, modifying and getting objects stored within the map.
+ *
+ * @author Ryan Bell w7346754@student.miracosta.edu
+ * @version 2.0
+ */
 public class Map {
-    static ArrayList<Object> mapObjects = new ArrayList<>();
-    private int xWidth, yHeight;
     static final int DEFAULT_SIZE = 30;
-    private int hours = 5, day = 1, minutes;
+    static ArrayList<Object> mapObjects = new ArrayList<>();
     private final ArrayList<String> firstNames = new ArrayList<>(Arrays.asList("Bob", "Amy", "Jeff", "Doug", "Gertrude", "George"));
+    private int xWidth, yHeight;
+    private int hours = 5, day = 1, minutes;
 
     /**
      * Constructs a new Map with default size.
@@ -32,7 +39,7 @@ public class Map {
      * MapParametersException.
      * Otherwise, it sets the map's width and height to the provided dimensions.
      */
-    private void setMapSize(){
+    private void setMapSize() {
         this.xWidth = Map.DEFAULT_SIZE;
         this.yHeight = Map.DEFAULT_SIZE;
     }
@@ -65,10 +72,9 @@ public class Map {
             throw new MapParametersException("There is already something at that location");
         } else if (pawnExists(name)) {
             throw new PawnException("There is already a pawn with that name.");
-        } else if (house.isFull()){
+        } else if (house.isFull()) {
             throw new HouseException("House is full");
-        }
-        else {
+        } else {
             mapObjects.add(new Pawn(name, x, y, house, this));
             house.addOccupants(getObjectAt(x, y));
         }
@@ -138,10 +144,10 @@ public class Map {
         } else if (isObjectAt(x, y)) {
             throw new MapParametersException("There is already something at that location");
         } else {
-            if(((Warehouse) this.getWarehouses().getFirst()).getWood() >= 5){
+            if (((Warehouse) this.getWarehouses().getFirst()).getWood() >= 5) {
                 ((Warehouse) this.getWarehouses().getFirst()).useWood(5);
                 mapObjects.add(new House(x, y));
-            } else{
+            } else {
                 throw new HouseException("Not enough wood!");
             }
         }
@@ -338,11 +344,11 @@ public class Map {
      * @param y the y-coordinate of the location to check
      * @return the house at the specified coordinates, or null if no house is found
      */
-    public Object getHouseAt(int x, int y){
+    public Object getHouseAt(int x, int y) {
         Object returnObject = null;
-        for(Object object : mapObjects){
-            if(object instanceof House house){
-                if(house.getX() == x && house.getY() == y){
+        for (Object object : mapObjects) {
+            if (object instanceof House house) {
+                if (house.getX() == x && house.getY() == y) {
                     returnObject = house;
                 }
             }
@@ -539,7 +545,7 @@ public class Map {
         }
         return pawnExists;
     }
-    
+
     /**
      * Advances the game time by 15 minutes and updates all pawns on the map.
      * <p>
@@ -566,6 +572,7 @@ public class Map {
             pawn.tick();
         }
     }
+
     /**
      * Gets the current hour in the game.
      *

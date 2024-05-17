@@ -10,13 +10,19 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * Controls the information view
+ *
+ * @author Ryan Bell w7346754@student.miracosta.edu
+ * @version 2.0
+ */
 public class InformationController {
 
     public void onBackButtonClicked(ActionEvent actionEvent) throws IOException {
         Object loadView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("start-view.fxml")));
         Scene loadScene = new Scene((Parent) loadView);
 
-        Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
 
         window.setScene(loadScene);
         window.show();
