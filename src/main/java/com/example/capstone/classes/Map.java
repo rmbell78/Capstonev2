@@ -97,6 +97,18 @@ public class Map {
         }
     }
 
+    /**
+     * Creates a house on the map at the specified location without checking for resources.
+     * <p>
+     * Validates the location of the house to ensure it is within the map boundaries
+     * and not on the same location as another object. If the location is invalid,
+     * a MapParametersException is thrown.
+     *
+     * @param x the x-coordinate of the house's location
+     * @param y the y-coordinate of the house's location
+     * @throws MapParametersException if the house's location is out of map
+     *                                boundaries or occupied
+     */
     public void createHouseNoResources(int x, int y) throws MapParametersException {
         if (x > xWidth | x <= 0 | y > yHeight | y <= 0) {
             throw new MapParametersException("House is not on map");
@@ -106,6 +118,20 @@ public class Map {
         mapObjects.add(new House(x, y));
     }
 
+    /**
+     * Creates a house on the map at the specified location, checking for required resources.
+     * <p>
+     * Validates the location of the house to ensure it is within the map boundaries
+     * and not on the same location as another object. If the location is invalid,
+     * a MapParametersException is thrown. If there are not enough resources,
+     * a HouseException is thrown.
+     *
+     * @param x the x-coordinate of the house's location
+     * @param y the y-coordinate of the house's location
+     * @throws MapParametersException if the house's location is out of map
+     *                                boundaries or occupied
+     * @throws HouseException         if there are not enough resources to create the house
+     */
     public void createHouse(int x, int y) throws MapParametersException, HouseException {
         if (x > xWidth | x <= 0 | y > yHeight | y <= 0) {
             throw new MapParametersException("House is not on map");
@@ -121,6 +147,18 @@ public class Map {
         }
     }
 
+    /**
+     * Creates a bush on the map at the specified location.
+     * <p>
+     * Validates the location of the bush to ensure it is within the map boundaries
+     * and not on the same location as another object. If the location is invalid,
+     * a MapParametersException is thrown.
+     *
+     * @param x the x-coordinate of the bush's location
+     * @param y the y-coordinate of the bush's location
+     * @throws MapParametersException if the bush's location is out of map
+     *                                boundaries or occupied
+     */
     public void createBush(int x, int y) throws MapParametersException {
         if (x > xWidth | x <= 0 | y > yHeight | y <= 0) {
             throw new MapParametersException("Bush is not on map");
@@ -131,6 +169,18 @@ public class Map {
         }
     }
 
+    /**
+     * Creates a tree on the map at the specified location.
+     * <p>
+     * Validates the location of the tree to ensure it is within the map boundaries
+     * and not on the same location as another object. If the location is invalid,
+     * a MapParametersException is thrown.
+     *
+     * @param x the x-coordinate of the tree's location
+     * @param y the y-coordinate of the tree's location
+     * @throws MapParametersException if the tree's location is out of map
+     *                                boundaries or occupied
+     */
     public void createTree(int x, int y) throws MapParametersException {
         if (x > xWidth | x <= 0 | y > yHeight | y <= 0) {
             throw new MapParametersException("Tree is not on map");
@@ -141,6 +191,17 @@ public class Map {
         }
     }
 
+    /**
+     * Generates the initial pawns and assigns them to the first house on the map.
+     * <p>
+     * This method locates the first house on the map and attempts to create and assign
+     * a specified number of starting pawns to it. The pawns are placed around the house
+     * in the following order of preference: right, down, left, up. If a location is
+     * already occupied or invalid, it moves to the next preferred location.
+     * <p>
+     * If an exception occurs during the creation or assignment of a pawn, the exception
+     * message is printed to the console.
+     */
     public void generateFirstPawns() {
         int houseX = 0, houseY = 0;
         House house = null;
@@ -151,7 +212,6 @@ public class Map {
                 houseY = house.getX();
             }
         }
-        // I still think there is a better way to do this
         int NUM_STARTING_PAWNS = 3;
         for (int i = 0; i < NUM_STARTING_PAWNS; i++) {
             if (!isObjectAt(houseX + 1, houseY)) {
@@ -187,6 +247,17 @@ public class Map {
 
     }
 
+    /**
+     * Retrieves the object located at the specified coordinates.
+     * <p>
+     * This method iterates through the list of map objects and checks if any object
+     * is located at the given (x, y) coordinates. If an object is found, it is returned.
+     * If no object is found at the specified location, null is returned.
+     *
+     * @param x the x-coordinate of the location to check
+     * @param y the y-coordinate of the location to check
+     * @return the object at the specified coordinates, or null if no object is found
+     */
     public Object getObjectAt(int x, int y) {
         Object returnObject = null;
         for (Object mapObject : mapObjects) {
@@ -216,6 +287,17 @@ public class Map {
 
     }
 
+    /**
+     * Checks if there is an object at the specified coordinates.
+     * <p>
+     * This method iterates through the list of map objects and checks if any object
+     * is located at the given (x, y) coordinates. If an object is found, it returns true.
+     * If no object is found at the specified location, it returns false.
+     *
+     * @param x the x-coordinate of the location to check
+     * @param y the y-coordinate of the location to check
+     * @return true if an object is found at the specified coordinates, false otherwise
+     */
     public boolean isObjectAt(int x, int y) {
         boolean isObjectAt = false;
         for (Object mapObject : mapObjects) {
@@ -245,6 +327,17 @@ public class Map {
 
     }
 
+    /**
+     * Retrieves the house located at the specified coordinates.
+     * <p>
+     * This method iterates through the list of map objects and checks if any object
+     * is a house located at the given (x, y) coordinates. If a house is found, it is returned.
+     * If no house is found at the specified location, null is returned.
+     *
+     * @param x the x-coordinate of the location to check
+     * @param y the y-coordinate of the location to check
+     * @return the house at the specified coordinates, or null if no house is found
+     */
     public Object getHouseAt(int x, int y){
         Object returnObject = null;
         for(Object object : mapObjects){
@@ -257,6 +350,15 @@ public class Map {
         return returnObject;
     }
 
+    /**
+     * Generates resources on the map.
+     * <p>
+     * This method generates bushes and trees at random locations on the map.
+     * It ensures that the generated locations are within the map boundaries
+     * and not already occupied by another object. If a valid location is found,
+     * a bush or tree is created at that location. If an exception occurs during
+     * the creation of a resource, the exception message is printed to the console.
+     */
     public void generateResources() {
         int MAX_BUSH = 4;
         for (int i = 1; i <= MAX_BUSH; i++) {
@@ -296,15 +398,34 @@ public class Map {
 
     }
 
+    /**
+     * Gets the width of the map.
+     *
+     * @return the width of the map
+     */
     public int getXWidth() {
         return xWidth;
     }
 
+    /**
+     * Gets the height of the map.
+     *
+     * @return the height of the map
+     */
     public int getYHeight() {
         return yHeight;
     }
 
 
+    /**
+     * Retrieves a list of all pawns on the map.
+     * <p>
+     * This method iterates through the list of map objects and checks if any object
+     * is an instance of the Pawn class. If an object is a pawn, it is added to the
+     * pawnList. The method returns the list of all pawns found on the map.
+     *
+     * @return an ArrayList containing all pawns on the map
+     */
     public ArrayList<Object> getPawns() {
         ArrayList<Object> pawnList = new ArrayList<>();
         for (Object mapObject : mapObjects) {
@@ -315,6 +436,15 @@ public class Map {
         return pawnList;
     }
 
+    /**
+     * Retrieves a list of all warehouses on the map.
+     * <p>
+     * This method iterates through the list of map objects and checks if any object
+     * is an instance of the Warehouse class. If an object is a warehouse, it is added to the
+     * warehouseList. The method returns the list of all warehouses found on the map.
+     *
+     * @return an ArrayList containing all warehouses on the map
+     */
     public ArrayList<Object> getWarehouses() {
         ArrayList<Object> warehouseList = new ArrayList<>();
         for (Object mapObject : mapObjects) {
@@ -325,6 +455,15 @@ public class Map {
         return warehouseList;
     }
 
+    /**
+     * Retrieves a list of all houses on the map.
+     * <p>
+     * This method iterates through the list of map objects and checks if any object
+     * is an instance of the House class. If an object is a house, it is added to the
+     * houseList. The method returns the list of all houses found on the map.
+     *
+     * @return an ArrayList containing all houses on the map
+     */
     public ArrayList<Object> getHouses() {
         ArrayList<Object> houseList = new ArrayList<>();
         for (Object mapObject : mapObjects) {
@@ -335,6 +474,15 @@ public class Map {
         return houseList;
     }
 
+    /**
+     * Retrieves a list of all resources on the map.
+     * <p>
+     * This method iterates through the list of map objects and checks if any object
+     * is an instance of the Resource class. If an object is a resource, it is added to the
+     * resourceList. The method returns the list of all resources found on the map.
+     *
+     * @return an ArrayList containing all resources on the map
+     */
     public ArrayList<Object> getResources() {
         ArrayList<Object> resourceList = new ArrayList<>();
         for (Object mapObject : mapObjects) {
@@ -345,6 +493,16 @@ public class Map {
         return resourceList;
     }
 
+    /**
+     * Retrieves a pawn by its name.
+     * <p>
+     * This method iterates through the list of pawns on the map and checks if any pawn
+     * has the specified name. If a pawn with the given name is found, it is returned.
+     * If no pawn with the specified name is found, null is returned.
+     *
+     * @param name the name of the pawn to retrieve
+     * @return the pawn with the specified name, or null if no such pawn is found
+     */
     public Object getPawn(String name) {
         ArrayList<Object> pawnList;
         pawnList = getPawns();
@@ -358,7 +516,16 @@ public class Map {
         return returnPawn;
     }
 
-
+    /**
+     * Checks if a pawn with the specified name exists on the map.
+     * <p>
+     * This method iterates through the list of pawns on the map and checks if any pawn
+     * has the specified name. If a pawn with the given name is found, it returns true.
+     * If no pawn with the specified name is found, it returns false.
+     *
+     * @param name the name of the pawn to check for existence
+     * @return true if a pawn with the specified name exists, false otherwise
+     */
     public boolean pawnExists(String name) {
         ArrayList<Object> pawnList;
         boolean pawnExists = false;
@@ -372,7 +539,15 @@ public class Map {
         }
         return pawnExists;
     }
-
+    
+    /**
+     * Advances the game time by 15 minutes and updates all pawns on the map.
+     * <p>
+     * This method increments the minutes by 15. If the minutes reach 60, they are reset to 0 and the hours are incremented by 1.
+     * If the hours reach 24, they are reset to 0 and the day is incremented by 1.
+     * <p>
+     * After updating the time, this method retrieves all pawns on the map and calls their tick method to update their state.
+     */
     public void tick() {
         minutes += 15;
         if (minutes == 60) {
@@ -391,15 +566,29 @@ public class Map {
             pawn.tick();
         }
     }
-
+    /**
+     * Gets the current hour in the game.
+     *
+     * @return the current hour
+     */
     public int getHours() {
         return hours;
     }
 
+    /**
+     * Gets the current minutes in the game.
+     *
+     * @return the current minutes
+     */
     public int getMinutes() {
         return minutes;
     }
 
+    /**
+     * Gets the current day in the game.
+     *
+     * @return the current day
+     */
     public int getDay() {
         return day;
     }

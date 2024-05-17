@@ -80,6 +80,12 @@ public class GameController {
     ArrayList<Button> pawnButtonList;
     String selectedPawn;
 
+    /**
+     * Initializes the game controller.
+     * <p>
+     * This method sets up the game by starting the game, drawing the map, and adding pawn buttons.
+     * It also initializes the pawn button list and sets the scroll pane to the bottom.
+     */
     public void initialize() {
         map = startGame();
         drawMap();
@@ -93,6 +99,14 @@ public class GameController {
     }
 
 
+    /**
+     * Adds a button for the specified pawn to the Pawn_List and sets up its action handler.
+     * <p>
+     * This method creates a new button for the given pawn, sets its action handler to the handle method,
+     * assigns an ID based on the pawn's name, and adds it to the Pawn_List and pawnButtonList.
+     *
+     * @param pawn The pawn object for which the button is to be created and added.
+     */
     public void addPawnButton(Object pawn) {
         Pawn workingPawn = (Pawn) pawn;
         pawnButton = new Button(workingPawn.getName());
@@ -103,6 +117,14 @@ public class GameController {
         pawnButtonList.add(pawnButton);
     }
 
+    /**
+     * Starts the game by initializing the map and generating initial resources and structures.
+     * <p>
+     * This method creates a new map, generates resources, and attempts to place a house at the center of the map.
+     * If the initial placement fails due to map parameters, it adjusts the x-coordinate until a valid location is found.
+     *
+     * @return The initialized map with generated resources and structures.
+     */
     private Map startGame() {
         Map map = new Map();
         map.generateResources();
@@ -143,6 +165,14 @@ public class GameController {
         return map;
     }
 
+    /**
+     * Draws the map and updates the game canvas with the current state of the game.
+     * <p>
+     * This method retrieves the list of pawns, houses, resources, and warehouses from the map.
+     * It then iterates through each list to draw the respective objects on the game canvas.
+     * The method also updates the population count, food count, wood count, house count, and time display.
+     * If any pawn does not have an assigned resource or house, a message is added to the message box.
+     */
     public void drawMap() {
         ArrayList<Object> pawns = map.getPawns();
         ArrayList<Object> houses = map.getHouses();
@@ -215,6 +245,15 @@ public class GameController {
 
     }
 
+    /**
+     * Sets the statistics for the specified pawn and updates the UI elements with the pawn's details.
+     * <p>
+     * This method retrieves the pawn object using the provided pawn name and updates various UI elements
+     * with the pawn's health, food, hunger, wood, job, house location, resource assignment, current task,
+     * and current location.
+     *
+     * @param setPawnName The name of the pawn whose statistics are to be set and displayed.
+     */
     public void setStats(String setPawnName) {
         Pawn pawn = (Pawn) map.getPawn(setPawnName);
         Pawn_Name.setText(setPawnName);
@@ -226,7 +265,6 @@ public class GameController {
 
         House pawn_House = (House) pawn.getAssignedHouse();
         Resource pawn_Resource = (Resource) pawn.getAssignedResource();
-
 
         Pawn_House.setText("House at X: " + pawn_House.getX() + ", Y: " + pawn_House.getY());
 
@@ -255,12 +293,31 @@ public class GameController {
         Pawn_Currently_At.setText(pawn.getX() + ", " + pawn.getY());
 
     }
-
+    /**
+     * Adds a message to the message box and scrolls to the bottom.
+     * <p>
+     * This method creates a new Text node with the provided message,
+     * adds it to the Text_Box, and ensures the Text_Scroll_Pane is
+     * scrolled to the bottom to display the latest message.
+     *
+     * @param message The message to be added to the message box.
+     */
     private void addMessage(String message) {
         Text messageText = new Text(message);
         Text_Box.getChildren().add(messageText);
         Text_Scroll_Pane.setVvalue(1.0);
     }
+    
+    /**
+     * Checks if the event source is a pawn button.
+     * <p>
+     * This method verifies if the event source is an instance of Button and if it exists in the pawnButtonList.
+     * If both conditions are met, it returns true, indicating that the event source is a pawn button.
+     * Otherwise, it returns false.
+     *
+     * @param event The event to be checked.
+     * @return {@code true} if the event source is a pawn button, {@code false} otherwise.
+     */
     public boolean isPawnButton(Event event) {
         if (event.getSource() instanceof Button) {
             for (Button pawnButton : pawnButtonList) {
@@ -272,11 +329,22 @@ public class GameController {
         return false;
     }
 
+    /**
+     * Exits the application when the exit button is clicked.
+     * <p>
+     * This method is triggered by the exit button click event and terminates the application.
+     */
     @FXML
     protected void onExitButtonClick() {
         System.exit(0);
     }
 
+    /**
+     * Advances the game state to the next tick when the next button is clicked.
+     * <p>
+     * This method clears the game canvas, advances the game time by one tick, updates the selected pawn's statistics,
+     * and redraws the map to reflect the new game state.
+     */
     @FXML
     protected void onNextButtonClick() {
         GraphicsContext gc = Game_Canvas.getGraphicsContext2D();
@@ -289,6 +357,16 @@ public class GameController {
     }
 
 
+    /**
+     * Checks if the event source is a button for assigning a resource.
+     * <p>
+     * This method verifies if the event source is an instance of Button and if its ID starts with "assign_resource".
+     * If both conditions are met, it returns true, indicating that the event source is a resource assignment button.
+     * Otherwise, it returns false.
+     *
+     * @param event The event to be checked.
+     * @return {@code true} if the event source is a resource assignment button, {@code false} otherwise.
+     */
     private boolean isSetResourceButton(Event event) {
         if (event.getSource() instanceof Button) {
             String idString = ((Button) event.getSource()).getId();
@@ -297,6 +375,16 @@ public class GameController {
         return false;
     }
 
+    /**
+     * Checks if the event source is a button for assigning a house.
+     * <p>
+     * This method verifies if the event source is an instance of Button and if its ID starts with "assign_house".
+     * If both conditions are met, it returns true, indicating that the event source is a house assignment button.
+     * Otherwise, it returns false.
+     *
+     * @param event The event to be checked.
+     * @return {@code true} if the event source is a house assignment button, {@code false} otherwise.
+     */
     private boolean isSetHouseButton(Event event) {
         if (event.getSource() instanceof Button) {
             String idString = ((Button) event.getSource()).getId();
@@ -305,6 +393,16 @@ public class GameController {
         return false;
     }
 
+    /**
+     * Handles various events triggered by the user interface.
+     * <p>
+     * This method processes events from different sources such as TextFields and Buttons.
+     * Depending on the event source, it performs actions like adding a house, creating a pawn,
+     * assigning resources, or assigning houses. It also updates the game state and UI elements
+     * accordingly.
+     *
+     * @param event The event triggered by the user interface.
+     */
     public void handle(Event event) {
         if (event.getSource() instanceof TextField text) {
             String textString = String.valueOf(text.getCharacters());
@@ -435,6 +533,13 @@ public class GameController {
 
     }
 
+    /**
+     * Assigns a resource to the selected pawn.
+     * <p>
+     * This method creates a new window with a list of available resources (trees and bushes).
+     * The user can select a resource to assign to the currently selected pawn.
+     * If a resource is selected, it assigns the resource to the pawn and updates the game state.
+     */
     public void assignResource() {
         if (selectedPawn != null) {
             ArrayList<Object> resources = map.getResources();
@@ -473,9 +578,15 @@ public class GameController {
             stage.show();
         }
 
-
     }
 
+    /**
+     * Assigns a house to the selected pawn.
+     * <p>
+     * This method creates a new window with a list of available houses.
+     * The user can select a house to assign to the currently selected pawn.
+     * If a house is selected, it assigns the house to the pawn and updates the game state.
+     */
     public void assignHouse() {
         if (selectedPawn != null) {
             ArrayList<Object> houses = map.getHouses();
@@ -507,6 +618,13 @@ public class GameController {
         }
     }
 
+    /**
+     * Opens a window to add a new house to the map.
+     * <p>
+     * This method creates a new window with a text field for entering the coordinates (X, Y) of the new house.
+     * When the user enters the coordinates and presses Enter, the handle method is triggered to process the input.
+     * The new house is then added to the map at the specified coordinates if they are valid.
+     */
     public void addAHouse() {
         VBox box = new VBox();
 
@@ -527,6 +645,13 @@ public class GameController {
         stage.show();
     }
 
+    /**
+     * Opens a window to create a new pawn.
+     * <p>
+     * This method creates a new window with a text field for entering the name of the new pawn.
+     * When the user enters the name and presses Enter, the handle method is triggered to process the input.
+     * The new pawn is then added to the map with the specified name if it is valid.
+     */
     public void createPawn() {
         VBox box = new VBox();
         StackPane topLabel = new StackPane();
@@ -546,6 +671,5 @@ public class GameController {
         Stage stage = new Stage();
         stage.setScene(createPawn);
         stage.show();
-
     }
 }
