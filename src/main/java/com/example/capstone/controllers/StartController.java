@@ -14,7 +14,6 @@ import java.util.Objects;
 public class StartController {
     public Button start_Menu_Start_Game;
     public Button start_Menu_Information;
-    public Button start_Menu_Settings;
     public Button start_Menu_Exit;
 
     public void onStartGameButtonClicked(ActionEvent actionEvent) throws IOException {
@@ -28,7 +27,7 @@ public class StartController {
     }
 
 
-    public void onExitButtonClicked(ActionEvent actionEvent) {
+    public void onExitButtonClicked() {
         System.exit(0);
     }
 

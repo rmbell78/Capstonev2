@@ -4,17 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Map {
-    static ArrayList<Object> mapObjects = new ArrayList<Object>();
+    static ArrayList<Object> mapObjects = new ArrayList<>();
     private int xWidth, yHeight;
-    private final int MAX_TREE = 4;
-    private final int MAX_BUSH = 4;
-    static final int MAX_DIMENSION = 50;
-    static final int MIN_DIMENSION = 4;
-    private final int NUM_STARTING_PAWNS = 3;
     static final int DEFAULT_SIZE = 30;
-    private int numHouses;
     private int hours = 5, day = 1, minutes;
-    private ArrayList<String> firstNames = new ArrayList<>(Arrays.asList("Bob", "Amy", "Jeff", "Doug", "Gertrude", "George"));
+    private final ArrayList<String> firstNames = new ArrayList<>(Arrays.asList("Bob", "Amy", "Jeff", "Doug", "Gertrude", "George"));
 
     /**
      * Constructs a new Map with default size.
@@ -26,20 +20,7 @@ public class Map {
      */
     public Map() {
         super();
-        setMapSize(DEFAULT_SIZE, DEFAULT_SIZE);
-    }
-
-    /**
-     * Constructs a new Map with specified dimensions.
-     * <p>
-     * Initializes the map with the given dimensions. If setting the map size fails,
-     * it throws a MapParametersException.
-     *
-     * @param xWidth  the width of the map
-     * @param yHeight the height of the map
-     */
-    public Map(int xWidth, int yHeight) {
-        setMapSize(xWidth, yHeight);
+        setMapSize();
     }
 
     /**
@@ -50,43 +31,11 @@ public class Map {
      * If the dimensions are out of the allowed range, it throws a
      * MapParametersException.
      * Otherwise, it sets the map's width and height to the provided dimensions.
-     *
-     * @param xWidth  the width of the map to set
-     * @param yHeight the height of the map to set
      */
-    private void setMapSize(int xWidth, int yHeight){
-        this.xWidth = xWidth;
-        this.yHeight = yHeight;
+    private void setMapSize(){
+        this.xWidth = Map.DEFAULT_SIZE;
+        this.yHeight = Map.DEFAULT_SIZE;
     }
-
-    /**
-     * Creates a pawn on the map with the specified name and location.
-     * <p>
-     * Validates the location of the pawn to ensure it is within the map boundaries
-     * and not on the same location as another object. If the pawn's name already
-     * exists,
-     * a PawnException is thrown. If the location is invalid, a
-     * MapParametersException is thrown.
-     *
-     * @param name the name of the pawn to create
-     * @param x    the x-coordinate of the pawn's location
-     * @param y    the y-coordinate of the pawn's location
-     * @throws MapParametersException if the pawn's location is out of map
-     *                                boundaries or occupied
-     * @throws PawnException          if a pawn with the given name already exists
-     *
-    public void createPawn(String name, int x, int y) throws MapParametersException, PawnException {
-        if (x > xWidth | x <= 0 | y > yHeight | y <= 0) {
-            throw new MapParametersException("Pawn is not on map.");
-        } else if (isObjectAt(x, y)) {
-            throw new MapParametersException("There is already something at that location.");
-        } else if (pawnExists(name)) {
-            throw new PawnException("There is already a pawn with that name.");
-        } else {
-            mapObjects.add(new Pawn(name, x, y));
-        }
-    }
-    */
 
     /**
      * Creates a pawn on the map with the specified name and location and assigns it
@@ -116,9 +65,12 @@ public class Map {
             throw new MapParametersException("There is already something at that location");
         } else if (pawnExists(name)) {
             throw new PawnException("There is already a pawn with that name.");
-        } else {
+        } else if (house.isFull()){
+            throw new HouseException("House is full");
+        }
+        else {
             mapObjects.add(new Pawn(name, x, y, house, this));
-            house.addOcuppants(getObjectAt(x, y));
+            house.addOccupants(getObjectAt(x, y));
         }
     }
 
@@ -152,7 +104,6 @@ public class Map {
             throw new MapParametersException("There is already something at that location");
         }
         mapObjects.add(new House(x, y));
-        numHouses++;
     }
 
     public void createHouse(int x, int y) throws MapParametersException, HouseException {
@@ -164,7 +115,6 @@ public class Map {
             if(((Warehouse) this.getWarehouses().getFirst()).getWood() >= 5){
                 ((Warehouse) this.getWarehouses().getFirst()).useWood(5);
                 mapObjects.add(new House(x, y));
-                numHouses++;
             } else{
                 throw new HouseException("Not enough wood!");
             }
@@ -194,9 +144,6 @@ public class Map {
     public void generateFirstPawns() {
         int houseX = 0, houseY = 0;
         House house = null;
-        int nameIndex = 0;
-        // Maybe a while loop here instead, avoid going through the whole array list
-        // everytime
         for (Object mapObject : mapObjects) {
             if (mapObject instanceof House) {
                 house = (House) mapObject;
@@ -205,6 +152,7 @@ public class Map {
             }
         }
         // I still think there is a better way to do this
+        int NUM_STARTING_PAWNS = 3;
         for (int i = 0; i < NUM_STARTING_PAWNS; i++) {
             if (!isObjectAt(houseX + 1, houseY)) {
                 try {
@@ -241,29 +189,24 @@ public class Map {
 
     public Object getObjectAt(int x, int y) {
         Object returnObject = null;
-        for (int i = 0; i < mapObjects.size(); i++) {
-            if (mapObjects.get(i) instanceof Pawn) {
-                Pawn pawn = (Pawn) mapObjects.get(i);
+        for (Object mapObject : mapObjects) {
+            if (mapObject instanceof Pawn pawn) {
                 if (pawn.getX() == x && pawn.getY() == y) {
                     returnObject = pawn;
                 }
-            } else if (mapObjects.get(i) instanceof Warehouse) {
-                Warehouse wareHouse = (Warehouse) mapObjects.get(i);
+            } else if (mapObject instanceof Warehouse wareHouse) {
                 if (wareHouse.getX() == x && wareHouse.getY() == y) {
                     returnObject = wareHouse;
                 }
-            } else if (mapObjects.get(i) instanceof Tree) {
-                Tree tree = (Tree) mapObjects.get(i);
+            } else if (mapObject instanceof Tree tree) {
                 if (tree.getX() == x && tree.getY() == y) {
                     returnObject = tree;
                 }
-            } else if (mapObjects.get(i) instanceof Bush) {
-                Bush bush = (Bush) mapObjects.get(i);
+            } else if (mapObject instanceof Bush bush) {
                 if (bush.getX() == x && bush.getY() == y) {
                     returnObject = bush;
                 }
-            } else if (mapObjects.get(i) instanceof House) {
-                House house = (House) mapObjects.get(i);
+            } else if (mapObject instanceof House house) {
                 if (house.getX() == x && house.getY() == y) {
                     returnObject = house;
                 }
@@ -275,29 +218,24 @@ public class Map {
 
     public boolean isObjectAt(int x, int y) {
         boolean isObjectAt = false;
-        for (int i = 0; i < mapObjects.size(); i++) {
-            if (mapObjects.get(i) instanceof Warehouse) {
-                Warehouse wareHouse = (Warehouse) mapObjects.get(i);
+        for (Object mapObject : mapObjects) {
+            if (mapObject instanceof Warehouse wareHouse) {
                 if (wareHouse.getX() == x && wareHouse.getY() == y) {
                     isObjectAt = true;
                 }
-            } else if (mapObjects.get(i) instanceof Tree) {
-                Tree tree = (Tree) mapObjects.get(i);
+            } else if (mapObject instanceof Tree tree) {
                 if (tree.getX() == x && tree.getY() == y) {
                     isObjectAt = true;
                 }
-            } else if (mapObjects.get(i) instanceof Bush) {
-                Bush bush = (Bush) mapObjects.get(i);
+            } else if (mapObject instanceof Bush bush) {
                 if (bush.getX() == x && bush.getY() == y) {
                     isObjectAt = true;
                 }
-            } else if (mapObjects.get(i) instanceof House) {
-                House house = (House) mapObjects.get(i);
+            } else if (mapObject instanceof House house) {
                 if (house.getX() == x && house.getY() == y) {
                     isObjectAt = true;
                 }
-            } else if (mapObjects.get(i) instanceof Pawn) {
-                Pawn pawn = (Pawn) mapObjects.get(i);
+            } else if (mapObject instanceof Pawn pawn) {
                 if (pawn.getX() == x && pawn.getY() == y) {
                     isObjectAt = true;
                 }
@@ -307,7 +245,20 @@ public class Map {
 
     }
 
+    public Object getHouseAt(int x, int y){
+        Object returnObject = null;
+        for(Object object : mapObjects){
+            if(object instanceof House house){
+                if(house.getX() == x && house.getY() == y){
+                    returnObject = house;
+                }
+            }
+        }
+        return returnObject;
+    }
+
     public void generateResources() {
+        int MAX_BUSH = 4;
         for (int i = 1; i <= MAX_BUSH; i++) {
             boolean goodGen = false;
             int x, y;
@@ -324,6 +275,7 @@ public class Map {
                 System.out.println(mpe.getMessage());
             }
         }
+        int MAX_TREE = 4;
         for (int i = 1; i <= MAX_TREE; i++) {
             boolean goodGen = false;
             int x, y;
@@ -354,7 +306,7 @@ public class Map {
 
 
     public ArrayList<Object> getPawns() {
-        ArrayList<Object> pawnList = new ArrayList<Object>();
+        ArrayList<Object> pawnList = new ArrayList<>();
         for (Object mapObject : mapObjects) {
             if (mapObject instanceof Pawn) {
                 pawnList.add(mapObject);
@@ -364,7 +316,7 @@ public class Map {
     }
 
     public ArrayList<Object> getWarehouses() {
-        ArrayList<Object> warehouseList = new ArrayList<Object>();
+        ArrayList<Object> warehouseList = new ArrayList<>();
         for (Object mapObject : mapObjects) {
             if (mapObject instanceof Warehouse) {
                 warehouseList.add(mapObject);
@@ -374,7 +326,7 @@ public class Map {
     }
 
     public ArrayList<Object> getHouses() {
-        ArrayList<Object> houseList = new ArrayList<Object>();
+        ArrayList<Object> houseList = new ArrayList<>();
         for (Object mapObject : mapObjects) {
             if (mapObject instanceof House) {
                 houseList.add(mapObject);
@@ -384,7 +336,7 @@ public class Map {
     }
 
     public ArrayList<Object> getResources() {
-        ArrayList<Object> resourceList = new ArrayList<Object>();
+        ArrayList<Object> resourceList = new ArrayList<>();
         for (Object mapObject : mapObjects) {
             if (mapObject instanceof Resource) {
                 resourceList.add(mapObject);
@@ -394,7 +346,7 @@ public class Map {
     }
 
     public Object getPawn(String name) {
-        ArrayList<Object> pawnList = new ArrayList<Object>();
+        ArrayList<Object> pawnList;
         pawnList = getPawns();
         Pawn returnPawn = null;
         for (Object o : pawnList) {
@@ -408,13 +360,14 @@ public class Map {
 
 
     public boolean pawnExists(String name) {
-        ArrayList<Object> pawnList = new ArrayList<Object>();
+        ArrayList<Object> pawnList;
         boolean pawnExists = false;
         pawnList = getPawns();
         for (Object o : pawnList) {
             Pawn pawn = (Pawn) o;
             if (pawn.getName().equals(name)) {
                 pawnExists = true;
+                break;
             }
         }
         return pawnExists;
@@ -431,18 +384,12 @@ public class Map {
             day++;
         }
 
-        ArrayList<Object> pawnList = new ArrayList<Object>();
+        ArrayList<Object> pawnList;
         pawnList = this.getPawns();
         for (Object o : pawnList) {
             Pawn pawn = (Pawn) o;
             pawn.tick();
         }
-    }
-
-    public String getNextName(){
-        String name = firstNames.getFirst();
-        firstNames.removeFirst();
-        return name;
     }
 
     public int getHours() {

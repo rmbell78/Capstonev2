@@ -1,9 +1,8 @@
 package com.example.capstone.classes;
 
 public class Warehouse extends Inventory implements Placeable {
-    private int[] location = new int[2];
+    private final int[] location = new int[2];
     // [x][y] base 1
-    static final char DISPLAY_CHAR = 'x';
     static final int STARTING_WOOD = 0;
     static final int STARTING_FOOD = 10;
     public static final int MAX_FOOD = 100;
@@ -15,9 +14,6 @@ public class Warehouse extends Inventory implements Placeable {
         location[1] = y;
     }
 
-    public int[] getLocation() {
-        return location;
-    }
 
     @Override
     public int getX() {

@@ -4,15 +4,15 @@ import java.util.ArrayList;
 
 public class House implements Placeable {
     public static int HOUSE_CAPACITY = 3;
-    private int[] location = new int[2];
-    private ArrayList<Object> houseOccupants = new ArrayList<Object>();
+    private final int[] location = new int[2];
+    private final ArrayList<Object> houseOccupants = new ArrayList<>();
 
     public House(int x, int y) {
         location[0] = x;
         location[1] = y;
     }
 
-    public void addOcuppants(Object newOccupant) throws HouseException {
+    public void addOccupants(Object newOccupant) throws HouseException {
         if (houseOccupants.size() >= HOUSE_CAPACITY) {
             throw new HouseException("That house is already full");
         } else {
@@ -20,12 +20,12 @@ public class House implements Placeable {
         }
     }
 
+    public void removeOccupant(Object oldOccupant){
+        houseOccupants.remove(oldOccupant);
+    }
+
     public boolean isFull(){
-        if(houseOccupants.size() == HOUSE_CAPACITY){
-            return true;
-        } else{
-            return false;
-        }
+        return houseOccupants.size() == HOUSE_CAPACITY;
     }
 
     @Override

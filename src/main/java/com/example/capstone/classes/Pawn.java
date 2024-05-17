@@ -1,24 +1,21 @@
 package com.example.capstone.classes;
 
-import com.example.capstone.controllers.GameController;
-
 public class Pawn extends Inventory implements Placeable {
     private int health;
     private int hunger;
-    private int[] location = new int[2];
+    private final int[] location = new int[2];
     Object assignedWarehouse;
     Object assignedResource;
     Object assignedHouse;
     // [x][y] base 1
     final private int MAX_HEALTH = 10;
     final private int MAX_HUNGER = 10;
-    private int moveSpeed = 1;
     private boolean alive;
-    private String name = "NA";
-    private Map map;
+    private final String name;
+    private final Map map;
     private int task; //0 for sleep, 1 for harvest resources, 2 for return to warehouse.
 
-    public Pawn(String name, int x, int y, House house, Map map) throws HouseException {
+    public Pawn(String name, int x, int y, House house, Map map) {
         super(0, 0, 5, 5);
         health = MAX_HEALTH;
         hunger = MAX_HUNGER;
@@ -56,13 +53,13 @@ public class Pawn extends Inventory implements Placeable {
     public void work() {
         Resource resource = (Resource) assignedResource;
         if(assignedResource != null) {
-            if (resource.getResourceType().equals("tree")) {
+            if (resource instanceof Tree) {
                 if (super.getWood() < super.getWoodMax()) {
                     setTask(1);
                 } else {
                     setTask(2);
                 }
-            } else if (resource.getResourceType().equals("bush")) {
+            } else if (resource instanceof Bush) {
                 if (super.getFood() < super.getFoodMax()) {
                     setTask(1);
                 } else {
@@ -74,25 +71,20 @@ public class Pawn extends Inventory implements Placeable {
                     harvest();
                 } else {
                     goTo(assignedResource);
-                    System.out.println("Moving");
                 }
             } else if (task == 2) {
                 if (isAtLocation(assignedWarehouse)) {
                     deliverResources();
-                    System.out.println("delivering");
                 } else {
                     goTo(assignedWarehouse);
-                    System.out.println("Moving");
                 }
             }
         }
     }
 
     public void harvest() {
-        // testing
-        System.out.println("Harvest!!");
         Resource resource = (Resource) assignedResource;
-        if (resource.getResourceType().equals("tree")) {
+        if (resource instanceof Tree) {
             super.addWood(1);
         } else {
             super.addFood(1);
@@ -101,8 +93,6 @@ public class Pawn extends Inventory implements Placeable {
 
     public void deliverResources() {
         Warehouse warehouse = (Warehouse) assignedWarehouse;
-        // testing
-        System.out.println("delivering resources!!");
         super.useFood(warehouse.addFood(super.getFood()));
         super.useWood(warehouse.addWood(super.getWood()));
     }
@@ -121,14 +111,6 @@ public class Pawn extends Inventory implements Placeable {
         }
     }
 
-    public void setName(String name) throws PawnException {
-        if (map.pawnExists(name)) {
-            throw new PawnException("A pawn with that name already exists");
-        } else {
-            this.name = name;
-        }
-    }
-
     public String getName() {
         return name;
     }
@@ -142,7 +124,7 @@ public class Pawn extends Inventory implements Placeable {
 
         } else{
             this.assignedHouse = house;
-            workingHouse.addOcuppants(this);
+            workingHouse.addOccupants(this);
         }
     }
 
@@ -207,72 +189,51 @@ public class Pawn extends Inventory implements Placeable {
     public int getMaxHealth(){return MAX_HEALTH;}
 
     public void goTo(Object object) {
-        System.out.println("Going to");
         int targetX = 0, targetY = 0;
-        int spacesMoved = 0;
-        if (object instanceof House) {
-            House target = (House) object;
+        if (object instanceof House target) {
             targetX = target.getX();
             targetY = target.getY();
-        } else if (object instanceof Warehouse) {
-            Warehouse target = (Warehouse) object;
+        } else if (object instanceof Warehouse target) {
             targetX = target.getX();
             targetY = target.getY();
-        } else if (object instanceof Resource) {
-            Resource target = (Resource) object;
+        } else if (object instanceof Resource target) {
             targetX = target.getX();
             targetY = target.getY();
         }
-        do {
-            int deltaX = location[0] - targetX;
-            int deltaY = location[1] - targetY;
+        int deltaX = location[0] - targetX;
+        int deltaY = location[1] - targetY;
 
-            if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                if (deltaX < 0) {
-                    location[0]++;
-                } else if (deltaX > 0) {
-                    location[0]--;
-                }
-                spacesMoved++;
-            } else {
-                if (deltaY < 0) {
-                    location[1]++;
-                } else if (deltaY > 0) {
-                    location[1]--;
-                }
-                spacesMoved++;
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            if (deltaX < 0) {
+                location[0]++;
+            } else if (deltaX > 0) {
+                location[0]--;
             }
-        } while (spacesMoved < moveSpeed);
+        } else {
+            if (deltaY < 0) {
+                location[1]++;
+            } else if (deltaY > 0) {
+                location[1]--;
+            }
+        }
 
     }
 
     // Must be checked for type object, already checked by assign...
     private boolean isAtLocation(Object object) {
-        if (object instanceof House) {
-            House house = (House) object;
-            if (house.getX() == location[0] && house.getY() == location[1]) {
-                return true;
-            } else {
+        switch (object) {
+            case House house -> {
+                return house.getX() == location[0] && house.getY() == location[1];
+            }
+            case Warehouse wareHouse -> {
+                return wareHouse.getX() == location[0] && wareHouse.getY() == location[1];
+            }
+            case Resource resource -> {
+                return resource.getX() == location[0] && resource.getY() == location[1];
+            }
+            case null, default -> {
                 return false;
             }
-        } else if (object instanceof Warehouse) {
-            Warehouse wareHouse = (Warehouse) object;
-            if (wareHouse.getX() == location[0] && wareHouse.getY() == location[1]) {
-                return true;
-            } else {
-                return false;
-            }
-        } else if (object instanceof Resource) {
-            Resource resource = (Resource) object;
-            if (resource.getX() == location[0] && resource.getY() == location[1]) {
-                return true;
-            } else {
-                return false;
-            }
-        } else { // Id like something else here, an exception doesnt feel right nor does just
-            // returning false
-            // But should never encounter a bad object here
-            return false;
         }
     }
 

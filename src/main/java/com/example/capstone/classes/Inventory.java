@@ -16,30 +16,6 @@ public class Inventory {
 	static final int DEFAULT_VALUE = 10;
 
 	/**
-	 * Default constructor that initializes the inventory with default values.
-	 */
-	public Inventory() {
-		wood = DEFAULT_VALUE;
-		food = DEFAULT_VALUE;
-		woodMax = DEFAULT_VALUE;
-		foodMax = DEFAULT_VALUE;
-	}
-
-	/**
-	 * Constructor with parameters to set maximum values for wood and
-	 * food. Wood and food are automatically set to zero.
-	 *
-	 * @param woodMax Maximum wood quantity.
-	 * @param foodMax Maximum food quantity.
-	 */
-	public Inventory(int woodMax, int foodMax){
-		setFoodMax(foodMax);
-		setWoodMax(woodMax);
-		food = 0;
-		wood = 0;
-	}
-
-	/**
 	 * Constructor with parameters to set initial and maximum values for wood and
 	 * food.
 	 *
@@ -147,18 +123,12 @@ public class Inventory {
 	 * Uses a specified quantity of wood if available.
 	 *
 	 * @param numUsed The quantity of wood to use.
-	 * @return The quantity of wood used.
-	 */
-	public int useWood(int numUsed) {
-		if (wood - numUsed >= 0 && numUsed > 0) {
+     */
+	public void useWood(int numUsed) {
+		if (wood - numUsed > 0) {
 			wood -= numUsed;
-			return numUsed;
-		} else if (numUsed <= 0) {
-			return 0;
 		} else {
-			int returnValue = wood;
 			wood = 0;
-			return returnValue;
 		}
 	}
 
@@ -166,7 +136,7 @@ public class Inventory {
 	 * Uses a specified quantity of food if available.
 	 *
 	 * @param numUsed The quantity of food to use.
-	 * @return The quanity of food used.
+	 * @return The quantity of food used.
 	 */
 	public int useFood(int numUsed) {
 		if (food - numUsed >= 0 && numUsed > 0) {
