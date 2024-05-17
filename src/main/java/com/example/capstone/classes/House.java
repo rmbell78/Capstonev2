@@ -20,6 +20,10 @@ public class House implements Placeable {
         }
     }
 
+    public void removeOcuppant(Object oldOccupant){
+        houseOccupants.remove(oldOccupant);
+    }
+
     public boolean isFull(){
         if(houseOccupants.size() == HOUSE_CAPACITY){
             return true;

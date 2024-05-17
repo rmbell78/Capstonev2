@@ -35,16 +35,13 @@ import static javafx.scene.paint.Color.DODGERBLUE;
 
 public class GameController {
     @FXML
-    public Text Pawn_Schedule;
+    public Text Pawn_Currently_At;
 
     @FXML
     public Canvas Game_Canvas;
 
     @FXML
     public VBox Pawn_List;
-
-    @FXML
-    public Text Pawn_Warehouse;
 
     @FXML
     public Text Pawn_House;
@@ -95,7 +92,6 @@ public class GameController {
     Button pawnButton;
     ArrayList<Button> pawnButtonList;
     String selectedPawn;
-    boolean playPause = false;
 
     public void initialize() {
         map = startGame();
@@ -103,19 +99,22 @@ public class GameController {
         pawnButtonList = new ArrayList<>();
         ArrayList<Object> pawnList = map.getPawns();
         for (Object pawn : pawnList) {
-            Pawn workingPawn = (Pawn) pawn;
-            pawnButton = new Button(workingPawn.getName());
-            pawnButton.setOnAction(eventHandler);
-            pawnButton.idProperty();
-            pawnButton.setId(workingPawn.getName());
-            Pawn_List.getChildren().add(pawnButton);
-            pawnButtonList.add(pawnButton);
+            addPawnButton(pawn);
         }
         Text_Scroll_Pane.setVvalue(1.0);
 
     }
 
 
+    public void addPawnButton(Object pawn){
+        Pawn workingPawn = (Pawn) pawn;
+        pawnButton = new Button(workingPawn.getName());
+        pawnButton.setOnAction(eventHandler);
+        pawnButton.idProperty();
+        pawnButton.setId(workingPawn.getName());
+        Pawn_List.getChildren().add(pawnButton);
+        pawnButtonList.add(pawnButton);
+    }
     public Map startGame() {
         Map map = new Map();
         map.generateResources();
@@ -226,6 +225,9 @@ public class GameController {
             if (working_pawn.getAssignedResource() == null){
                 addMessage(working_pawn.getName() + " has no job!");
             }
+            if (working_pawn.getAssignedHouse() == null){
+                addMessage(working_pawn.getName() + " has no house!");
+            }
         }
 
     }
@@ -262,6 +264,7 @@ public class GameController {
             break;
         }
 
+        Pawn_Currently_At.setText(pawn.getX() + ", " + pawn.getY());
 
     }
 
@@ -294,7 +297,6 @@ public class GameController {
         if(selectedPawn != null){
             setStats(selectedPawn);
         }
-        //TODO add randomly spawning pawns
         drawMap();
     }
 
@@ -324,41 +326,82 @@ public class GameController {
         public void handle(Event event) {
             if(event.getSource() instanceof TextField){
                 TextField text = (TextField) event.getSource();
-                System.out.println(text.getCharacters());
-                String textString = String.valueOf(text.getCharacters());
-                int x = 100, y = 100;
-                boolean valid = true;
-                boolean assignment = true;
-                try{
-                    x = Integer.parseInt(textString.substring(0,textString.indexOf(",")));
-                } catch (NumberFormatException | StringIndexOutOfBoundsException nfe){
-                    addMessage("Not valid input");
-                    valid = false;
-                    assignment = false;
-                }
-                try{
-                    y = Integer.parseInt(textString.substring(textString.indexOf(",") + 1));
-                } catch (NumberFormatException | StringIndexOutOfBoundsException nfe){
-                    addMessage("Not valid input");
-                    valid = false;
-                    assignment = false;
-                }
-                if(valid){
-                    try{
-                        map.createHouse(x,y);
-                    }catch (MapParametersException | HouseException e) {
-                        addMessage(e.getMessage());
-                        assignment = false;
-                    }
-                }
-                if(assignment){
-                    addMessage("House added successfully");
-                }
-
+                String textString = String.valueOf(text.getCharacters());;
                 Scene scene = text.getScene();
                 Stage stage = (Stage) scene.getWindow();
-                stage.close();
-                drawMap();
+                switch (((TextField) event.getSource()).getId()){
+                    case "addAHouse":
+                        int x = 100, y = 100;
+                        boolean valid = true;
+                        boolean assignment = true;
+                        try{
+                            x = Integer.parseInt(textString.substring(0,textString.indexOf(",")));
+                        } catch (NumberFormatException | StringIndexOutOfBoundsException nfe){
+                            addMessage("Not valid input");
+                            valid = false;
+                            assignment = false;
+                        }
+                        try{
+                            y = Integer.parseInt(textString.substring(textString.indexOf(",") + 1));
+                        } catch (NumberFormatException | StringIndexOutOfBoundsException nfe){
+                            addMessage("Not valid input");
+                            valid = false;
+                            assignment = false;
+                        }
+                        if(valid){
+                            try{
+                                map.createHouse(x,y);
+                            }catch (MapParametersException | HouseException e) {
+                                addMessage(e.getMessage());
+                                assignment = false;
+                            }
+                        }
+                        if(assignment){
+                            addMessage("House added successfully");
+                        }
+
+                        stage.close();
+                        drawMap();
+                        break;
+                    case "createPawn":
+                        text = (TextField) event.getSource();
+                        textString = String.valueOf(text.getCharacters());
+                        int tryHouse = 0;
+                        int tryX = 10;
+                        boolean goodAssignment = false;
+                        ArrayList<Object> houseList = map.getHouses();
+                        do{
+                            try{
+                                map.createPawnAssignHouse(textString,tryX,10, (House) houseList.get(tryHouse) );
+                                Pawn newPawn = (Pawn) map.getPawns().getLast();
+                                Warehouse warehouse = (Warehouse) map.getWarehouses().getFirst();
+                                System.out.println("Assign warehouse at: " + warehouse.getX() + " , " + warehouse.getY());
+                                try {
+                                    newPawn.assignWarehouse(warehouse.getX(), warehouse.getY());
+                                } catch (MapParametersException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                addPawnButton(map.getPawns().getLast());
+                                goodAssignment = true;
+                            } catch (PawnException e) {
+                                addMessage(e.getMessage());
+                                break;
+                            } catch (HouseException e) {
+                                tryHouse++;
+                                if (tryHouse > houseList.size() - 1){
+                                    addMessage("Build more housing first!");
+                                    break;
+                                }
+                            } catch (MapParametersException e) {
+                                tryX++;
+                            }
+                        } while (!goodAssignment);
+
+
+                        stage.close();
+                        drawMap();
+                        break;
+                }
             } else if (isPawnButton(event)) {
                 Button pawnButton = (Button) event.getSource();
                 setStats(pawnButton.getId());
@@ -390,17 +433,20 @@ public class GameController {
                 Button houseButton = (Button) event.getSource();
                 String idString = houseButton.getId();
                 Pawn pawn = (Pawn) map.getPawn(selectedPawn);
+                House oldHouse = (House) pawn.getAssignedHouse();
                 int x = Integer.parseInt(idString.substring(idString.indexOf(" ") + 1, idString.indexOf(",")));
                 int y = Integer.parseInt(idString.substring(idString.indexOf(",") + 1));
                 try {
-                    pawn.assignHouse(map.getObjectAt(x,y));
+                    pawn.assignHouse(map.getHouseAt(x,y));
                 } catch (HouseException he) {
                     addMessage(he.getMessage());
                     assignment = false;
                 }
                 if (assignment){
                     addMessage("House assignment successful");
+                    oldHouse.removeOcuppant(pawn);
                 }
+                setStats(selectedPawn);
                 Scene scene = houseButton.getScene();
                 Stage stage = (Stage) scene.getWindow();
                 stage.close();
@@ -493,6 +539,7 @@ public class GameController {
         topLabel.getChildren().addAll(topRectangle,lText);
         box.getChildren().add(topLabel);
         TextField tf = new TextField("X, Y");
+        tf.setId("addAHouse");
         tf.setOnAction(eventHandler);
         box.getChildren().add(tf);
 
@@ -500,5 +547,27 @@ public class GameController {
         Stage stage = new Stage();
         stage.setScene(addHouse);
         stage.show();
+    }
+
+    public void createPawn(){
+        VBox box = new VBox();
+        StackPane topLabel = new StackPane();
+        Rectangle topRectangle = new Rectangle(200,20);
+        topRectangle.setFill(DODGERBLUE);
+        Text lText = new Text("Add a pawn");
+        topLabel.getChildren().addAll(topRectangle,lText);
+        box.getChildren().add(topLabel);
+
+        TextField tf = new TextField("Pawns name");
+        tf.setId("createPawn");
+        tf.setOnAction(eventHandler);
+
+        box.getChildren().add(tf);
+
+        Scene createPawn = new Scene(box,200,200);
+        Stage stage = new Stage();
+        stage.setScene(createPawn);
+        stage.show();
+
     }
 }

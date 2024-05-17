@@ -171,17 +171,19 @@
                   <StackPane prefHeight="30.0" prefWidth="130.0">
                      <children>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="130.0" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Work Time" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Currently at:" />
                      </children>
                   </StackPane>
                   <StackPane prefHeight="30.0" prefWidth="130.0">
                      <children>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="130.0" />
-                        <Text fx:id="Pawn_Schedule" strokeType="OUTSIDE" strokeWidth="0.0" text=" Time : Time" />
+                        <Text fx:id="Pawn_Currently_At" strokeType="OUTSIDE" strokeWidth="0.0" text="X , Y" />
                      </children>
                   </StackPane>
-                  <Button mnemonicParsing="false" text="Change" />
                </children>
+               <padding>
+                  <Insets right="80.0" />
+               </padding>
             </HBox>
          </children>
       </VBox>
@@ -191,6 +193,7 @@
          </content>
       </ScrollPane>
       <Button layoutX="15.0" layoutY="805.0" mnemonicParsing="false" onAction="#addAHouse" text="Add A House" wrapText="true" />
-      <Button layoutX="131.0" layoutY="806.0" mnemonicParsing="false" onAction="#onNextButtonClick" text="Next" />
+      <Button layoutX="207.0" layoutY="805.0" mnemonicParsing="false" onAction="#onNextButtonClick" text="Next" />
+      <Button layoutX="113.0" layoutY="805.0" mnemonicParsing="false" onAction="#createPawn" text="Add a pawn" />
    </children>
 </AnchorPane>

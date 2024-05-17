@@ -116,7 +116,10 @@ public class Map {
             throw new MapParametersException("There is already something at that location");
         } else if (pawnExists(name)) {
             throw new PawnException("There is already a pawn with that name.");
-        } else {
+        } else if (house.isFull()){
+            throw new HouseException("House is full");
+        }
+        else {
             mapObjects.add(new Pawn(name, x, y, house, this));
             house.addOcuppants(getObjectAt(x, y));
         }
@@ -305,6 +308,19 @@ public class Map {
         }
         return isObjectAt;
 
+    }
+
+    public Object getHouseAt(int x, int y){
+        Object returnObject = null;
+        for(Object object : mapObjects){
+            if(object instanceof House){
+                House house = (House) object;
+                if(house.getX() == x && house.getY() == y){
+                    returnObject = house;
+                }
+            }
+        }
+        return returnObject;
     }
 
     public void generateResources() {
