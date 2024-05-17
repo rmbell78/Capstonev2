@@ -15,6 +15,7 @@ public class Warehouse extends Inventory implements Placeable {
     }
 
 
+
     @Override
     public int getX() {
         return location[0];
